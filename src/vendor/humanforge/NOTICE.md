@@ -1,0 +1,1 @@
+Runtime adapted from HumanForge, commit 2226df1f50a04c5a8e1c02ea33780d28337dfbb1. MIT license, copyright original contributors. Full notice in public/licenses/humanforge-MIT.txt. L’MOR only changes disposal to invalidate asynchronous updates and release skeleton GPU resources. Assets are CC0; garment preparation is implemented in scripts/prepare-human-garments.py.

@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import {
-  defaultBody,
   money,
   productById,
   products,
@@ -141,12 +140,13 @@ export default function Studio() {
       </div>
       <div className="section-heading">
         <h2 id="studio-title">
-          Your fit. <span>Your rules.</span>
+          Your fit.
+          <br />
+          <span>Your rules.</span>
         </h2>
         <p>
           Jangan cuma dibayangin.
-          <br />
-          Coba, mix & match, jadiin gayamu.
+          <br /> Coba, mix & match, jadiin gayamu.
         </p>
       </div>
       <div className="studio-layout">
@@ -187,7 +187,7 @@ export default function Studio() {
               <Check size={12} /> Pilih untuk coba
             </span>
           </div>
-          <div className="wardrobe-grid">
+          <div className="wardrobe-grid" data-lenis-prevent>
             {filtered.map((p) => (
               <ProductCard
                 key={p.id}
@@ -411,10 +411,10 @@ export default function Studio() {
           <div className="soft-notice">
             <Info size={17} />
             <p>
-              Ini visualisasi avatar 3D bergaya ilustratif. Bentuk pakaian
-              mewakili kategori produk; foto, material, ukuran, dan harga adalah
-              data demo. Preview belum memperhitungkan drape kain atau ukuran
-              tubuh secara presisi.
+              Model manusia 3D ini memakai tekstur kulit dan bentuk tubuh
+              anatomis. Pakaian mewakili pilihan koleksi; foto, material,
+              ukuran, dan harga adalah data demo. Preview belum memperhitungkan
+              drape kain atau ukuran tubuh secara presisi.
             </p>
           </div>
         </Dialog>
@@ -499,4 +499,3 @@ function PlusMark() {
     </span>
   )
 }
-export const heroBody = { ...defaultBody, skin: 2 }

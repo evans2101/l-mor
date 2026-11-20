@@ -14,7 +14,6 @@ import {
   Download,
   Heart,
   Info,
-  Leaf,
   Menu,
   Minus,
   Package,
@@ -27,20 +26,13 @@ import {
   Truck,
   X,
 } from 'lucide-react'
-import {
-  defaultBottom,
-  defaultTop,
-  imageUrl,
-  money,
-  productById,
-  products,
-  type Product,
-} from './data'
+import { imageUrl, money, productById, products, type Product } from './data'
 import { itemKey, totals, useStore } from './state'
-import AvatarView from './components/AvatarView'
-import Studio, { heroBody } from './components/Studio'
+import ExperienceHome from './components/ExperienceHome'
 import { ProductCard, ProductDialog } from './components/Product'
 import Dialog from './components/Dialog'
+import { scrollToSection, useHomeSection } from './navigation'
+import { scrollSmoothlyTo, useSmoothScroll } from './smoothScroll'
 
 function Brand({ animated = false }: { animated?: boolean }) {
   return (
@@ -55,6 +47,7 @@ function Header() {
     location = useLocation(),
     [menu, setMenu] = useState(false)
   const count = state.cart.reduce((n, x) => n + x.quantity, 0)
+  const section = useHomeSection()
   useEffect(() => setMenu(false), [location])
   useEffect(() => {
     if (!menu) return
@@ -66,35 +59,39 @@ function Header() {
   }, [menu])
   return (
     <>
-      <div className="announcement">
-        <span>LESS GUESSING. MORE YOU.</span>
-        <span>Meet your style, before you wear it.</span>
-        <span>THE EVERYDAY COLLECTION ’26</span>
-      </div>
       <header className="header">
         <Link to="/" aria-label="L’MOR beranda">
           <Brand />
         </Link>
-        <nav className={menu ? 'nav open' : 'nav'} aria-label="Navigasi utama">
-          <NavLink
+        <nav
+          className={menu ? 'nav open' : 'nav'}
+          aria-label="Navigasi utama"
+          onClick={() => setMenu(false)}
+        >
+          <Link
             to="/"
-            end
-            className={({ isActive }) =>
-              isActive && !location.search ? 'active' : ''
-            }
+            className={section === 'intro' ? 'active' : ''}
+            aria-current={section === 'intro' ? 'location' : undefined}
           >
             Beranda
-          </NavLink>
+          </Link>
           <NavLink to="/catalog">
             Koleksi <span className="nav-new">NEW</span>
           </NavLink>
           <Link
             to="/?studio=1"
-            className={location.search.includes('studio') ? 'active' : ''}
+            className={section === 'studio' ? 'active' : ''}
+            aria-current={section === 'studio' ? 'location' : undefined}
           >
             5D Studio <Sparkles size={13} />
           </Link>
-          <Link to="/?about=1">Tentang L’MOR</Link>
+          <Link
+            to="/?about=1"
+            className={section === 'about' ? 'active' : ''}
+            aria-current={section === 'about' ? 'location' : undefined}
+          >
+            Tentang L’MOR
+          </Link>
         </nav>
         <div className="header-actions">
           <Link
@@ -139,16 +136,30 @@ function Header() {
 function ScrollToPage() {
   const { pathname, search, key } = useLocation()
   useEffect(() => {
-    if (
-      pathname === '/' &&
-      (search.includes('studio') || search.includes('about'))
-    ) {
-      document
-        .getElementById(search.includes('studio') ? 'studio' : 'about')
-        ?.scrollIntoView({ behavior: 'instant' })
-      return
+    // Wait for the new route and its scroll scenes to mount before navigating.
+    let cancelled = false,
+      frame = 0
+    document.fonts.ready.then(() => {
+      if (cancelled) return
+      frame = requestAnimationFrame(() => {
+        if (pathname === '/') {
+          const params = new URLSearchParams(search)
+          scrollToSection(
+            params.has('studio')
+              ? 'studio'
+              : params.has('about')
+                ? 'about'
+                : 'intro',
+          )
+        } else {
+          scrollSmoothlyTo(0, true)
+        }
+      })
+    })
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frame)
     }
-    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname, search, key])
   useEffect(() => {
     document.title = `${pathname === '/catalog' ? 'Koleksi' : pathname === '/cart' ? 'Your Bag' : 'Wear your own way.'} — L’MOR`
@@ -156,144 +167,7 @@ function ScrollToPage() {
   return null
 }
 function Home() {
-  return (
-    <main>
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            <span className="tiny-spark">✳</span> EVERYDAY PIECES. EXTRAORDINARY
-            YOU.
-          </p>
-          <h1>
-            Gaya kamu.
-            <br />
-            Aturan <span>kamu.</span>
-            <i className="hero-asterisk" aria-hidden="true">
-              ✳
-            </i>
-          </h1>
-          <p className="hero-description">
-            Bukan sekadar cocok di foto.
-            <br />
-            Temukan outfit yang terasa <strong>kamu banget.</strong>
-            <br />
-            Coba dulu di 5D Studio, pakai dengan percaya diri.
-          </p>
-          <div className="hero-buttons">
-            <Link className="btn btn-dark" to="/?studio=1">
-              <ScanIcon /> Explore 5D Studio
-            </Link>
-            <Link className="btn btn-text" to="/catalog">
-              Lihat koleksi <ShoppingBag size={16} />
-            </Link>
-          </div>
-          <div className="hero-bottom">
-            <div className="swatch-stack">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <p>
-              Different bodies. Same freedom.
-              <br />
-              <strong>A little more you, every day.</strong>
-            </p>
-          </div>
-        </div>
-        <div className="hero-art">
-          <div className="hero-orbit orbit-one" />
-          <div className="hero-orbit orbit-two" />
-          <span className="hero-backtype" aria-hidden="true">
-            5D
-          </span>
-          <div className="hello-bubble">
-            <span>Hey, good looking!</span>
-            <span className="wave-hand">✋</span>
-          </div>
-          <AvatarView
-            hero
-            body={heroBody}
-            top={defaultTop}
-            bottom={defaultBottom}
-          />
-          <div className="hero-sticker">
-            <span className="sticker-star">✳</span>
-            <span>
-              YOUR STYLE.
-              <br />
-              <strong>REIMAGINED.</strong>
-            </span>
-          </div>
-          <div className="hero-caption">
-            <span>THE L’MOR MUSE</span>
-            <span>100% YOUR VIBE</span>
-          </div>
-          <span className="art-coordinate">EST. TO BE YOURSELF</span>
-        </div>
-      </section>
-      <div className="benefits-strip">
-        <span>
-          <ScanIcon /> Try it on. Make it yours.
-        </span>
-        <i />
-        <span>
-          <LayersIcon /> Mix, match, repeat.
-        </span>
-        <i />
-        <span>
-          <Leaf size={18} /> Less guesswork. More confidence.
-        </span>
-        <i />
-        <span className="strip-signature">
-          MADE FOR YOUR EVERYDAY <span>✳</span>
-        </span>
-      </div>
-      <Studio />
-      <section className="brand-section" id="about">
-        <div className="brand-section-top">
-          <p className="eyebrow">A LITTLE MORE THAN CLOTHES.</p>
-          <span>ALWAYS YOU. ALWAYS L’MOR.</span>
-        </div>
-        <div className="brand-display">
-          <span className="floating-asterisk asterisk-one">✳</span>
-          <Brand animated />
-          <span className="floating-asterisk asterisk-two">✳</span>
-        </div>
-        <div className="brand-section-bottom">
-          <h2>
-            Wear less doubt.
-            <br />
-            <span>Wear more you.</span>
-          </h2>
-          <div>
-            <p>
-              Gaya bukan soal jadi orang lain.
-              <br />
-              Ini tentang menemukan versi paling nyaman dari dirimu.
-            </p>
-            <div className="brand-cta">
-              <Link className="btn btn-lime" to="/catalog">
-                <ShoppingBag size={17} /> Belanja sekarang
-              </Link>
-              <Link className="btn btn-light-outline" to="/?studio=1">
-                Buat look kamu
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-      <div className="marquee" aria-hidden="true">
-        <div>
-          {Array.from({ length: 8 }, (_, i) => (
-            <span key={i}>
-              YOUR BODY. YOUR STYLE. <b>✳</b> YOUR L’MOR. <b>✳</b>{' '}
-            </span>
-          ))}
-        </div>
-      </div>
-    </main>
-  )
+  return <ExperienceHome />
 }
 function ScanIcon() {
   return (
@@ -307,21 +181,6 @@ function ScanIcon() {
       aria-hidden="true"
     >
       <path d="M8 3H4v4m12-4h4v4M4 17v4h4m12-4v4h-4M8 8l4-2 4 2v7l-4 3-4-3zM4 12h16" />
-    </svg>
-  )
-}
-function LayersIcon() {
-  return (
-    <svg
-      width="19"
-      height="19"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      aria-hidden="true"
-    >
-      <path d="m12 3 9 5-9 5-9-5zm-9 9 9 5 9-5M3 16l9 5 9-5" />
     </svg>
   )
 }
@@ -535,7 +394,7 @@ function Catalog() {
             </p>
           </div>
           <p className="tiny muted">
-            Foto, harga, dan detail koleksi adalah contoh untuk eksplorasi.
+            Gambar, harga, dan detail koleksi adalah contoh untuk eksplorasi.
           </p>
         </aside>
         <div className="catalog-results">
@@ -983,7 +842,7 @@ function Footer() {
         <span>© {new Date().getFullYear()} L’MOR. Wear your own way.</span>
         <span>CONCEPT STORE · SAMPLE COLLECTION</span>
         <a href="https://unsplash.com/license" target="_blank" rel="noreferrer">
-          Sample photography from Unsplash
+          Sample photography: Unsplash
         </a>
       </div>
       {info && (
@@ -1006,6 +865,7 @@ function NotFound() {
   )
 }
 export default function App() {
+  useSmoothScroll()
   return (
     <>
       <a

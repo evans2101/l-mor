@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
+import { lockPageScroll } from '../smoothScroll'
 export default function Dialog({
   title,
   children,
@@ -18,16 +19,19 @@ export default function Dialog({
     const el = ref.current
     if (!el) return
     const before = document.body.style.overflow
+    const unlock = lockPageScroll()
     document.body.style.overflow = 'hidden'
     el.showModal()
     return () => {
       document.body.style.overflow = before
       el.close()
+      unlock()
     }
   }, [])
   return createPortal(
     <dialog
       className={`dialog ${wide ? 'dialog-wide' : ''}`}
+      data-lenis-prevent
       ref={ref}
       aria-labelledby={titleId}
       onCancel={onClose}

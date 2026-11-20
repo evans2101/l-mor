@@ -53,7 +53,7 @@ export const products: Product[] = [
     price: 219000,
     image: 'tee-washed',
     colors: [
-      color('Washed charcoal', '#666761'),
+      color('Washed charcoal', '#252624'),
       color('Dusty rose', '#bf9290'),
       color('Ecru', '#dcd1ba'),
     ],
@@ -72,7 +72,7 @@ export const products: Product[] = [
     price: 329000,
     image: 'shirt-sage',
     colors: [
-      color('Sage', '#9ba78d'),
+      color('White', '#f2f1eb'),
       color('Sand', '#c8b896'),
       color('Midnight', '#373e4b'),
     ],
@@ -90,9 +90,9 @@ export const products: Product[] = [
     price: 359000,
     image: 'shirt-oxford',
     colors: [
-      color('Cloud blue', '#a6bfcc'),
+      color('Navy', '#3d4b5c'),
       color('White', '#f3f0e7'),
-      color('Navy', '#354152'),
+      color('Burgundy', '#6f3f48'),
     ],
     fit: 'Regular fit',
     material: 'Cotton oxford',
@@ -108,7 +108,7 @@ export const products: Product[] = [
     price: 429000,
     image: 'hoodie',
     colors: [
-      color('Stone', '#c7c4b8'),
+      color('Sage grey', '#9eaea9'),
       color('Forest', '#536357'),
       color('Ink', '#30312e'),
     ],
@@ -127,9 +127,9 @@ export const products: Product[] = [
     price: 549000,
     image: 'jacket',
     colors: [
+      color('Black', '#252625'),
       color('Espresso', '#604b40'),
       color('Olive', '#74765b'),
-      color('Ink', '#30312e'),
     ],
     fit: 'Boxy fit',
     material: 'Cotton twill',
@@ -139,22 +139,22 @@ export const products: Product[] = [
   },
   {
     id: 'pleated-trouser',
-    name: 'Flow Pleated Trousers',
+    name: 'Flow Pocket Joggers',
     category: 'bottoms',
     type: 'trousers',
     price: 389000,
     image: 'trousers',
     colors: [
-      color('Sand', '#c6b597'),
+      color('Dusty rose', '#d3a295'),
       color('Charcoal', '#4c4d49'),
       color('Cream', '#e6decb'),
     ],
-    fit: 'Wide straight fit',
+    fit: 'Relaxed tapered fit',
     material: 'Poly rayon twill',
     badge: 'ESSENTIAL',
     gender: 'unisex',
     description:
-      'Celana berpotongan lurus lebar dengan jatuh yang lembut. Ruang gerak lebih, tanpa kehilangan bentuk.',
+      'Celana tapered dengan saku depan dan waistband elastis. Ruang gerak lebih, tanpa kehilangan bentuk.',
   },
   {
     id: 'straight-denim',
@@ -227,13 +227,13 @@ export const products: Product[] = [
   },
   {
     id: 'weekend-short',
-    name: 'Off Duty Shorts',
+    name: 'Off Duty Joggers',
     category: 'bottoms',
-    type: 'shorts',
+    type: 'trousers',
     price: 259000,
     image: 'trousers',
     colors: [
-      color('Oat', '#c3b69d'),
+      color('Dusty rose', '#d3a295'),
       color('Olive', '#7b8166'),
       color('Ink', '#30312e'),
     ],
@@ -241,7 +241,7 @@ export const products: Product[] = [
     material: 'Cotton twill',
     gender: 'unisex',
     description:
-      'Celana pendek dengan panjang di atas lutut dan potongan santai. Untuk langkah ringan di hari libur.',
+      'Celana jogger dengan pergelangan elastis dan potongan santai. Untuk langkah ringan di hari libur.',
   },
 ]
 export const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const

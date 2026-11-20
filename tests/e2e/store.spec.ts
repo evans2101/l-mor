@@ -1,15 +1,153 @@
 import { test, expect } from '@playwright/test'
 
+test('header smoothly navigates sections, repeats clicks and follows manual scrolling', async ({
+  page,
+}) => {
+  test.setTimeout(60000)
+  await page.goto('/')
+  await expect(
+    page.locator('.story-model .avatar[data-ready="true"]'),
+  ).toBeVisible({ timeout: 20000 })
+  await expect(page.locator('html')).toHaveClass(/lenis/)
+  expect(
+    await page.evaluate(
+      () => getComputedStyle(document.documentElement).scrollbarWidth,
+    ),
+  ).toBe('none')
+  await page.evaluate(() => {
+    const samples: number[] = []
+    ;(window as unknown as { scrollSamples: number[] }).scrollSamples = samples
+    window.addEventListener('scroll', () => samples.push(scrollY), {
+      passive: true,
+    })
+  })
+  const nav = page.getByRole('navigation', { name: 'Navigasi utama' })
+  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('#studio')
+          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+      { timeout: 15000 },
+    )
+    .toBe(115)
+  await expect(
+    nav.getByRole('link', { name: '5D Studio', exact: true }),
+  ).toHaveAttribute('aria-current', 'location')
+  await expect
+    .poll(() =>
+      page
+        .locator('.studio-wipe')
+        .evaluate((el) => el.getBoundingClientRect().bottom <= 0),
+    )
+    .toBe(true)
+  await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('#about')
+          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+      { timeout: 15000 },
+    )
+    .toBe(0)
+  await expect(
+    nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }),
+  ).toHaveAttribute('aria-current', 'location')
+  await expect
+    .poll(() =>
+      page
+        .locator('.beyond-wipe')
+        .evaluate((el) => el.getBoundingClientRect().bottom <= 0),
+    )
+    .toBe(true)
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+  await expect(
+    nav.getByRole('link', { name: 'Beranda', exact: true }),
+  ).toHaveAttribute('aria-current', 'location')
+  // The URL still points to about; clicking it again must still scroll.
+  await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('#about')
+          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+      { timeout: 15000 },
+    )
+    .toBe(0)
+  const samples = await page.evaluate(
+    () => (window as unknown as { scrollSamples: number[] }).scrollSamples,
+  )
+  expect(new Set(samples).size).toBeGreaterThan(4)
+  expect(samples.some((y) => y > 100 && y < 1500)).toBe(true)
+  await nav.getByRole('link', { name: 'Koleksi', exact: false }).click()
+  await expect(page).toHaveURL(/catalog/)
+  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('#studio')
+          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+      { timeout: 15000 },
+    )
+    .toBe(115)
+  await nav.getByRole('link', { name: 'Beranda', exact: true }).click()
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0)
+  await expect(page.locator('html')).not.toHaveClass(/lenis-scrolling/)
+  await page.mouse.move(600, 500)
+  await page.mouse.wheel(0, 600)
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100)
+  await expect(page.locator('html')).not.toHaveClass(/lenis-scrolling/)
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(510)
+  expect(
+    await page
+      .locator('.story-pin')
+      .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+  ).toBe(0)
+  expect(
+    await page
+      .locator('.story-heading')
+      .evaluate((el) => Number(getComputedStyle(el).opacity)),
+  ).toBeLessThan(1)
+  // Stopping between chapters must never leave a transition covering the UI.
+  await page.evaluate(() =>
+    window.scrollTo({
+      top: document.getElementById('studio')!.offsetTop - innerHeight * 0.1,
+      behavior: 'instant',
+    }),
+  )
+  await expect
+    .poll(
+      () =>
+        page.locator('.studio-wipe').evaluate((el) => {
+          const rect = el.getBoundingClientRect()
+          return rect.bottom <= 0 || rect.top >= innerHeight
+        }),
+      { timeout: 15000 },
+    )
+    .toBe(true)
+})
+
 test('studio → personalized outfit → lookbook → persistent bag → demo summary', async ({
   page,
 }) => {
+  test.setTimeout(60000)
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   await page.goto('/')
   await page.getByRole('link', { name: 'Explore 5D Studio' }).click()
-  await expect(page.locator('#studio canvas')).toBeVisible()
+  await expect(page.locator('#studio canvas')).toBeVisible({ timeout: 15000 })
+  await expect(page.locator('#studio .avatar[data-ready="true"]')).toBeVisible({
+    timeout: 20000,
+  })
   await page
-    .getByRole('button', { name: 'Pakai Cloud Relaxed Hoodie', exact: true })
+    .getByRole('button', {
+      name: 'Pakai Cloud Relaxed Hoodie',
+      exact: true,
+    })
     .click()
   await page.getByRole('button', { name: 'Celana 06', exact: true }).click()
   await page
@@ -51,7 +189,10 @@ test('studio → personalized outfit → lookbook → persistent bag → demo su
   await page.getByRole('button', { name: 'Pakai', exact: true }).click()
   await expect(page.locator('.summary-total')).toContainText('790.200')
   await page
-    .getByRole('button', { name: 'Tambah Cloud Relaxed Hoodie', exact: true })
+    .getByRole('button', {
+      name: 'Tambah Cloud Relaxed Hoodie',
+      exact: true,
+    })
     .click()
   await expect(page.locator('.summary-total')).toContainText('1.176.300')
   await page.reload()
@@ -74,7 +215,10 @@ test('studio → personalized outfit → lookbook → persistent bag → demo su
     .getByRole('button', { name: 'Kembali ke bag', exact: true })
     .click()
   await page
-    .getByRole('button', { name: 'Hapus Cloud Relaxed Hoodie', exact: true })
+    .getByRole('button', {
+      name: 'Hapus Cloud Relaxed Hoodie',
+      exact: true,
+    })
     .click()
   await page
     .getByRole('button', { name: 'Hapus Original Straight Denim', exact: true })
@@ -122,7 +266,7 @@ test('corrupt local storage recovers without a blank screen', async ({
   await page.goto('/')
   await page.evaluate(() => localStorage.setItem('lmor-studio-v1', '{bad json'))
   await page.reload()
-  await expect(page.getByRole('heading', { name: /Gaya kamu/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /GAYA KAMU/ })).toBeVisible()
   await expect(
     page.getByRole('link', { name: 'Shopping bag, 0 produk', exact: true }),
   ).toBeVisible()
@@ -160,6 +304,7 @@ test('all pages fit narrow, mobile, tablet and desktop viewports', async ({
 test('mobile: menu, live canvas changes, catalog filter and cart', async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.getByRole('button', { name: 'Buka navigasi', exact: true }).click()
@@ -173,7 +318,10 @@ test('mobile: menu, live canvas changes, catalog filter and cart', async ({
   const canvas = page.locator('#studio canvas')
   await canvas.scrollIntoViewIfNeeded()
   await expect(canvas).toBeVisible()
-  await expect(page.getByText('Preview 3D belum tersedia')).toHaveCount(0)
+  await expect(page.locator('#studio .avatar[data-ready="true"]')).toBeVisible({
+    timeout: 20000,
+  })
+  await expect(page.getByText('Model manusia belum tersedia')).toHaveCount(0)
   const before = await canvas.screenshot()
   await page.getByRole('button', { name: 'Skin tone 6', exact: true }).click()
   await expect

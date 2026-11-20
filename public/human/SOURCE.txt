@@ -1,0 +1,9 @@
+HumanForge assets: https://raw.githubusercontent.com/abdulrehman043/humanforge/2226df1f50a04c5a8e1c02ea33780d28337dfbb1/assets/human/
+Source commit: 2226df1f50a04c5a8e1c02ea33780d28337dfbb1
+Assets: CC0 1.0. Runtime: MIT. See /licenses/humanforge-assets-CC0.md and humanforge-MIT.txt.
+
+Hood component: https://github.com/kblood/CharacterCreator/blob/852e48f316b90a0937234886630e4fb4cdfd1f78/output/clothing_hoodie.glb
+Source commit: 852e48f316b90a0937234886630e4fb4cdfd1f78
+Source Git blob SHA: 85999d3584078c11e9e4637ea53d88b150a775c3
+Generated garment asset: CC0-1.0 per LICENSE-NOTES.md; only hood geometry imported. No CharacterCreator code used.
+Local derivative: proxies/clothes-lmor_hood.glb.gz via scripts/import-hood-detail.py.
