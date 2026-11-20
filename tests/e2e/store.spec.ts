@@ -35,13 +35,6 @@ test('header smoothly navigates sections, repeats clicks and follows manual scro
   await expect(
     nav.getByRole('link', { name: '5D Studio', exact: true }),
   ).toHaveAttribute('aria-current', 'location')
-  await expect
-    .poll(() =>
-      page
-        .locator('.studio-wipe')
-        .evaluate((el) => el.getBoundingClientRect().bottom <= 0),
-    )
-    .toBe(true)
   await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
   await expect
     .poll(
@@ -55,13 +48,6 @@ test('header smoothly navigates sections, repeats clicks and follows manual scro
   await expect(
     nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }),
   ).toHaveAttribute('aria-current', 'location')
-  await expect
-    .poll(() =>
-      page
-        .locator('.beyond-wipe')
-        .evaluate((el) => el.getBoundingClientRect().bottom <= 0),
-    )
-    .toBe(true)
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
   await expect(
     nav.getByRole('link', { name: 'Beranda', exact: true }),
@@ -112,23 +98,6 @@ test('header smoothly navigates sections, repeats clicks and follows manual scro
       .locator('.story-heading')
       .evaluate((el) => Number(getComputedStyle(el).opacity)),
   ).toBeLessThan(1)
-  // Stopping between chapters must never leave a transition covering the UI.
-  await page.evaluate(() =>
-    window.scrollTo({
-      top: document.getElementById('studio')!.offsetTop - innerHeight * 0.1,
-      behavior: 'instant',
-    }),
-  )
-  await expect
-    .poll(
-      () =>
-        page.locator('.studio-wipe').evaluate((el) => {
-          const rect = el.getBoundingClientRect()
-          return rect.bottom <= 0 || rect.top >= innerHeight
-        }),
-      { timeout: 15000 },
-    )
-    .toBe(true)
 })
 
 test('studio → personalized outfit → lookbook → persistent bag → demo summary', async ({

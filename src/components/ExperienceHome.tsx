@@ -20,7 +20,6 @@ export default function ExperienceHome() {
     if (!element) return
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
-      let transitionMotion: gsap.core.Timeline | undefined
       const context = gsap.context(() => {
         const story = gsap.timeline({
           scrollTrigger: {
@@ -63,64 +62,8 @@ export default function ExperienceHome() {
           )
           .to('.story-second-copy', { y: -45, opacity: 0, duration: 0.2 }, 0.78)
           .to('.story-model', { y: -40, opacity: 0.15, duration: 0.25 }, 0.76)
-          .to(
-            '.story-curtain',
-            { scaleY: 1, duration: 0.2, ease: 'power1.in' },
-            0.8,
-          )
           .to('.light-beam', { xPercent: -50, rotation: 8, duration: 1 }, 0)
           .to('.floor-orbit', { rotation: 16, scale: 1.3, duration: 1 }, 0)
-        for (const [target, wipe] of [
-          ['#studio', '.studio-wipe'],
-          ['#about', '.beyond-wipe'],
-        ]) {
-          gsap.set(wipe, { yPercent: 105, y: 0 })
-          const reveal = (direction: number) => {
-            transitionMotion?.kill()
-            gsap.set('.scene-wipe', { yPercent: 105, y: 0 })
-            // A transition always finishes, even if the visitor stops scrolling.
-            transitionMotion = gsap
-              .timeline()
-              .fromTo(
-                wipe,
-                { yPercent: direction * 105, y: 0 },
-                { yPercent: 0, y: 0, duration: 0.32, ease: 'power3.inOut' },
-                0,
-              )
-              .fromTo(
-                `${wipe} .scene-wipe-title`,
-                { y: direction * 55, opacity: 0 },
-                { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' },
-                0.12,
-              )
-              .fromTo(
-                `${wipe} .scene-wipe-orbit`,
-                { scale: 0.85, rotation: -20 * direction },
-                {
-                  scale: 1.05,
-                  rotation: 15 * direction,
-                  duration: 0.8,
-                  ease: 'none',
-                },
-                0,
-              )
-              .to(
-                wipe,
-                {
-                  yPercent: -direction * 105,
-                  duration: 0.4,
-                  ease: 'power3.inOut',
-                },
-                0.42,
-              )
-          }
-          ScrollTrigger.create({
-            trigger: target,
-            start: 'top 20%',
-            onEnter: () => reveal(1),
-            onLeaveBack: () => reveal(-1),
-          })
-        }
         gsap.from('.studio-section .section-heading', {
           y: 70,
           opacity: 0,
@@ -151,10 +94,7 @@ export default function ExperienceHome() {
           },
         })
       }, element)
-      return () => {
-        transitionMotion?.kill()
-        context.revert()
-      }
+      return () => context.revert()
     })
     const closing = ScrollTrigger.create({
       trigger: '.closing-track',
@@ -250,7 +190,6 @@ export default function ExperienceHome() {
             </span>
             <span>YOUR BODY. YOUR STYLE. YOUR L’MOR.</span>
           </div>
-          <div className="story-curtain" aria-hidden="true" />
         </div>
       </section>
       <Studio />
@@ -300,28 +239,6 @@ export default function ExperienceHome() {
           </div>
         </div>
       </section>
-      <div className="scene-wipe studio-wipe" aria-hidden="true">
-        <div className="scene-wipe-orbit" />
-        <span className="scene-wipe-label">02 / THE PERSONAL STYLE STUDIO</span>
-        <p className="scene-wipe-title">
-          LESS GUESSING.
-          <br />
-          <em>MORE YOU.</em>
-        </p>
-        <span className="scene-wipe-note">
-          YOUR BODY. YOUR STYLE. YOUR RULES.
-        </span>
-      </div>
-      <div className="scene-wipe beyond-wipe" aria-hidden="true">
-        <div className="scene-wipe-orbit" />
-        <span className="scene-wipe-label">03 / A LITTLE MORE L’MOR</span>
-        <p className="scene-wipe-title">
-          WEAR IT.
-          <br />
-          <em>OWN IT.</em>
-        </p>
-        <span className="scene-wipe-note">THE NEXT CHAPTER IS YOURS.</span>
-      </div>
       <nav
         className="chapter-dock"
         data-chapter={chapter}
