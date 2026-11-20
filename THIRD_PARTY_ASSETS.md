@@ -33,9 +33,8 @@ Komponen hood diturunkan dari `output/clothing_hoodie.glb` milik [CharacterCreat
 ## Font dan runtime
 
 - Manrope dan Space Grotesk melalui Fontsource: SIL Open Font License.
-- Helvetiker bold untuk logo 3D, didistribusikan bersama Three.js: notice asli di `public/licenses/three-fonts.txt`.
 - Lucide: ISC. Three.js, React, React DOM, React Router, dan fflate: lisensi masing-masing disertakan di `public/licenses/`.
 - Lenis: MIT, salinan di `public/licenses/lenis.txt`.
 - GSAP dan ScrollTrigger: [GSAP Standard License](https://gsap.com/standard-license); notice di `public/licenses/gsap.txt`.
 
-Logo teks L’MOR, favicon, layout, integrasi kontrol, pemetaan produk, styling wajah, pose, detail pakaian, dan choreography scroll dibuat untuk proyek ini. Konsep panggung scroll terinspirasi [Igloo Inc.](https://www.igloo.inc/); tidak memakai kode, logo, atau aset visual Igloo.
+Simbol L’MOR berasal dari gambar yang diberikan pemilik proyek. Siluetnya ditelusuri menjadi `public/brand/lmor-symbol.svg`; bentuk yang sama dipakai untuk favicon serta ekstrusi logo 3D. Layout, integrasi kontrol, pemetaan produk, styling wajah, pose, detail pakaian, dan choreography scroll dibuat untuk proyek ini. Konsep panggung scroll terinspirasi [Igloo Inc.](https://www.igloo.inc/); tidak memakai kode, logo, atau aset visual Igloo.

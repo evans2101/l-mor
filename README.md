@@ -23,7 +23,7 @@ npm run test:e2e    # navigasi scroll, studio sampai cart, responsive dan aksesi
 
 ## Halaman dan fitur
 
-- **Beranda**: tiga bab dengan panggung penuh layar, tipografi besar, model manusia yang berputar mengikuti scroll, transisi ke studio, dan penutup logo silver 3D. Lenis untuk inertia scroll, CSS sticky, serta GSAP ScrollTrigger menjaga kontrol mouse, sentuhan, dan keyboard. Scrollbar halaman disembunyikan. Perpindahan bab memakai fade dan gerak konten, tanpa panel atau slogan yang menutup layar. Header melakukan smooth scroll ke section, termasuk saat kembali dari katalog/cart, dan menu aktif mengikuti posisi scroll.
+- **Beranda**: tiga bab dengan panggung penuh layar, tipografi besar, model manusia yang berputar mengikuti scroll, transisi ke studio, dan penutup simbol L’MOR 3D berbahan silver dari logo yang diberikan pemilik proyek. Lenis untuk inertia scroll, CSS sticky, serta GSAP ScrollTrigger menjaga kontrol mouse, sentuhan, dan keyboard. Scrollbar halaman disembunyikan. Perpindahan bab memakai fade dan gerak konten, tanpa panel atau slogan yang menutup layar. Header melakukan smooth scroll ke section, termasuk saat kembali dari katalog/cart, dan menu aktif mengikuti posisi scroll.
 - **5D Studio**: baju + celana sekaligus, kategori dan warna, ukuran masing-masing produk, model male/female, enam skin tone, tinggi 140–205 cm dan berat 40–130 kg. Pada mobile, pilihan produk dapat digeser horizontal. Model dapat diputar dengan drag/tombol panah, dilihat dari tiga sisi, diperbesar, atau diputar otomatis. Tersedia reset, lookbook maksimal 12 look, dan belanja seluruh outfit.
 - **Katalog** (`/#/catalog`): 12 produk contoh dengan foto asli, pencarian, kategori, filter model/harga/favorit, sortir harga/terbaru, muat lebih banyak, detail produk, pilihan warna/ukuran, panduan ukuran, coba di studio, dan tambah ke bag.
 - **Bag** (`/#/cart`): varian warna/ukuran, jumlah, hapus, favorit, ringkasan biaya, progress gratis ongkir demo, kupon demo `LMOR10`, serta unduh ringkasan lokal.
@@ -62,6 +62,7 @@ src/
     Product.tsx             Kartu, detail, swatch, panduan ukuran
     Dialog.tsx              Dialog modal aksesibel
   styles.css                Desain dark/silver dan breakpoint responsif
+public/brand/               Simbol logo SVG, dipakai juga untuk geometri 3D
 public/images/              Foto produk asli
 public/human/               Mesh, tekstur, morph targets dan fitting proxies
 ```

@@ -111,20 +111,18 @@ svg {
   backdrop-filter: blur(14px);
 }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font: 600 32px/0.95 var(--grotesk);
   letter-spacing: -1.8px;
   white-space: nowrap;
-  position: relative;
 }
-.brand-dot {
-  color: #b9d2e2;
-}
-.brand sup {
-  position: absolute;
-  right: -10px;
-  top: 0;
-  font-size: 10px;
-  letter-spacing: 0;
+.brand-symbol {
+  width: 1.4em;
+  height: 1.05em;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .nav {
   display: flex;
@@ -1335,26 +1333,29 @@ input[type='range']::-moz-range-thumb {
   z-index: 2;
 }
 .logo-scene {
+  position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.logo-scene > canvas {
+.logo-canvas {
+  position: absolute;
+  inset: 0;
+}
+.logo-canvas > canvas {
   width: 100%;
   height: 100%;
   display: block;
 }
-.logo-scene > span,
 .logo-fallback {
-  font: 600 clamp(80px, 20vw, 300px) var(--grotesk);
-  letter-spacing: -0.06em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #dfe8ed;
+  width: 100%;
+  height: 78%;
+  max-width: 75%;
+  margin: auto;
+  object-fit: contain;
+  align-self: center;
 }
 .closing-halo {
   position: absolute;
@@ -3832,7 +3833,7 @@ input[type='range']::-moz-range-thumb {
     align-items: start;
   }
   .footer-brand .brand {
-    font-size: 36px;
+    font-size: 30px;
   }
   .footer-brand > p {
     font-size: 12px;

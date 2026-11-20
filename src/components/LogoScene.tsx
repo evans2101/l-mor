@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState, type MutableRefObject } from 'react'
 import * as THREE from 'three'
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
+import { brandSymbolUrl } from '../brand'
 export default function LogoScene({
   progress,
 }: {
   progress: MutableRefObject<number>
 }) {
   const host = useRef<HTMLDivElement>(null),
-    [fallback, setFallback] = useState(false)
+    [ready, setReady] = useState(false)
   useEffect(() => {
     const el = host.current
     if (!el) return
@@ -21,7 +21,6 @@ export default function LogoScene({
         powerPreference: 'low-power',
       })
     } catch {
-      setFallback(true)
       return
     }
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5))
@@ -46,11 +45,12 @@ export default function LogoScene({
     scene.add(rim)
     const group = new THREE.Group()
     scene.add(group)
-    let textGeometry: TextGeometry | undefined,
+    let geometry: THREE.ExtrudeGeometry | undefined,
       material: THREE.MeshPhysicalMaterial | undefined,
-      text: THREE.Mesh | undefined
+      mark: THREE.Mesh | undefined
     let visible = false,
       disposed = false,
+      prepared = false,
       distance = 4,
       lastFrame = 0
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -60,11 +60,11 @@ export default function LogoScene({
       renderer.setSize(width, height)
       camera.aspect = width / height
       camera.updateProjectionMatrix()
-      if (textGeometry) {
-        textGeometry.computeBoundingBox()
-        const size = textGeometry.boundingBox!.getSize(new THREE.Vector3())
+      if (geometry) {
+        geometry.computeBoundingBox()
+        const size = geometry.boundingBox!.getSize(new THREE.Vector3())
         distance =
-          Math.max(size.y / 0.57, size.x / (0.57 * camera.aspect)) * 1.3
+          Math.max(size.y / 0.57, size.x / (0.57 * camera.aspect)) * 1.22
       }
     }
     const ro = new ResizeObserver(resize)
@@ -77,23 +77,27 @@ export default function LogoScene({
       { rootMargin: '120px' },
     )
     io.observe(el)
-    void new FontLoader()
-      .loadAsync(
-        `${import.meta.env.BASE_URL}fonts/helvetiker_bold.typeface.json`,
-      )
-      .then((font) => {
+    void new SVGLoader()
+      .loadAsync(brandSymbolUrl)
+      .then(async (svg) => {
         if (disposed) return
-        textGeometry = new TextGeometry("L'MOR.", {
-          font,
-          size: 1,
-          depth: 0.16,
-          curveSegments: 12,
+        const shapes = svg.paths.flatMap((path) => SVGLoader.createShapes(path))
+        if (!shapes.length) return
+        geometry = new THREE.ExtrudeGeometry(shapes, {
+          depth: 24,
+          steps: 1,
+          curveSegments: 10,
           bevelEnabled: true,
-          bevelThickness: 0.026,
-          bevelSize: 0.015,
-          bevelSegments: 4,
+          bevelThickness: 3,
+          bevelSize: 2.2,
+          bevelSegments: 3,
         })
-        textGeometry.center()
+        // SVG coordinates point down; rotate to preserve the supplied silhouette.
+        geometry.rotateX(Math.PI)
+        geometry.computeBoundingBox()
+        const scale = 2.7 / geometry.boundingBox!.getSize(new THREE.Vector3()).x
+        geometry.scale(scale, scale, scale)
+        geometry.center()
         material = new THREE.MeshPhysicalMaterial({
           color: '#d8e2e8',
           metalness: 1,
@@ -101,22 +105,33 @@ export default function LogoScene({
           clearcoat: 0.5,
           clearcoatRoughness: 0.22,
         })
-        text = new THREE.Mesh(textGeometry, material)
-        group.add(text)
+        mark = new THREE.Mesh(geometry, material)
+        group.add(mark)
         resize()
+        await renderer.compileAsync(scene, camera)
+        if (disposed) return
+        prepared = true
+        setReady(true)
       })
       .catch(() => {
-        if (!disposed) setFallback(true)
+        // The supplied vector remains visible if WebGL or the mesh cannot load.
       })
     renderer.setAnimationLoop((time) => {
-      if (!visible || document.hidden || !text || time - lastFrame < 32) return
+      if (
+        !visible ||
+        document.hidden ||
+        !mark ||
+        !prepared ||
+        time - lastFrame < 32
+      )
+        return
       lastFrame = time
       group.rotation.y = reduced
         ? -0.1
         : -0.35 + progress.current * 0.65 + Math.sin(time * 0.0002) * 0.035
       group.rotation.x = reduced ? 0.05 : 0.15 - progress.current * 0.22
       group.rotation.z = reduced ? 0 : -0.025 + Math.sin(time * 0.0003) * 0.012
-      camera.position.set(0, 0.08, distance)
+      camera.position.set(0, 0, distance)
       camera.lookAt(0, 0, 0)
       renderer.render(scene, camera)
     })
@@ -125,7 +140,7 @@ export default function LogoScene({
       renderer.setAnimationLoop(null)
       io.disconnect()
       ro.disconnect()
-      textGeometry?.dispose()
+      geometry?.dispose()
       material?.dispose()
       env.dispose()
       renderer.dispose()
@@ -135,11 +150,20 @@ export default function LogoScene({
   return (
     <div
       className="logo-scene"
-      ref={host}
       role="img"
-      aria-label="Logo L’MOR tiga dimensi berbahan silver"
+      aria-label="Simbol L’MOR"
+      data-ready={ready}
     >
-      {fallback && <span>L’MOR.</span>}
+      <div className="logo-canvas" ref={host} aria-hidden="true" />
+      {!ready && (
+        <img
+          className="logo-fallback"
+          src={brandSymbolUrl}
+          alt=""
+          width="667"
+          height="490"
+        />
+      )}
     </div>
   )
 }

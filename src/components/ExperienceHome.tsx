@@ -7,6 +7,7 @@ import { defaultBody, defaultBottom, defaultTop } from '../data'
 import AvatarView from './AvatarView'
 import Studio from './Studio'
 import { scrollToSection, useHomeSection } from '../navigation'
+import { brandSymbolUrl } from '../brand'
 const LogoScene = lazy(() => import('./LogoScene'))
 gsap.registerPlugin(ScrollTrigger)
 export default function ExperienceHome() {
@@ -219,7 +220,15 @@ export default function ExperienceHome() {
           <div className="closing-logo">
             {loadLogo && (
               <Suspense
-                fallback={<span className="logo-fallback">L’MOR.</span>}
+                fallback={
+                  <img
+                    className="logo-fallback"
+                    src={brandSymbolUrl}
+                    alt="Logo L’MOR"
+                    width="667"
+                    height="490"
+                  />
+                }
               >
                 <LogoScene progress={logoProgress} />
               </Suspense>

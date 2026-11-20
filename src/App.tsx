@@ -33,12 +33,19 @@ import { ProductCard, ProductDialog } from './components/Product'
 import Dialog from './components/Dialog'
 import { scrollToSection, useHomeSection } from './navigation'
 import { scrollSmoothlyTo, useSmoothScroll } from './smoothScroll'
+import { brandSymbolUrl } from './brand'
 
-function Brand({ animated = false }: { animated?: boolean }) {
+function Brand() {
   return (
-    <span className={`brand ${animated ? 'animated-brand' : ''}`}>
-      L’MOR<span className="brand-dot">.</span>
-      {!animated && <sup>✳</sup>}
+    <span className="brand" aria-hidden="true">
+      <img
+        className="brand-symbol"
+        src={brandSymbolUrl}
+        alt=""
+        width="667"
+        height="490"
+      />
+      <span>L’MOR</span>
     </span>
   )
 }
