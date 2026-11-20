@@ -1,4 +1,4 @@
-# L’MOR — Wear your own way.
+# L’MOR - Wear your own way.
 
 Website konsep fashion responsif dengan katalog dan ruang coba manusia 3D. Seluruh aplikasi berjalan di browser, **tanpa database, akun, API key, atau backend**.
 
@@ -24,10 +24,18 @@ npm run test:e2e    # navigasi scroll, studio sampai cart, responsive dan aksesi
 ## Halaman dan fitur
 
 - **Beranda**: satu panggung tetap setinggi layar. Wheel/trackpad, swipe vertikal, Page Up/Down, atau tombol navigasi mengganti konten hero → studio → logo 3D di posisi yang sama dengan crossfade, blur halus, dan perubahan skala. Dokumen tidak bergulir. Tidak ada panel atau slogan perantara. Header mengikuti konten aktif dan tautan langsung `/#/?studio=1` serta `/#/?about=1` tetap bekerja. Konten nonaktif dibuat inert dan disembunyikan dari pembaca layar. Preferensi reduced motion memakai perpindahan instan.
-- **5D Studio**: baju + celana sekaligus, kategori dan warna, ukuran masing-masing produk, model male/female, enam skin tone, tinggi 140–205 cm dan berat 40–130 kg. Daftar produk dan kontrol fitting bergulir di dalam panel; pada mobile, produk dapat digeser horizontal dan area studio dapat digulir tanpa memindahkan dokumen. Gesture di tengah panel tidak mengganti bab. Beri jeda lalu gulir di batas panel atau gunakan navigasi bab untuk melanjutkan. Model dapat diputar dengan drag/tombol panah, dilihat dari tiga sisi, diperbesar, atau diputar otomatis. Tersedia reset, lookbook maksimal 12 look, dan belanja seluruh outfit.
+- **5D Studio**: baju + celana sekaligus, kategori dan warna, ukuran masing-masing produk, model male/female, enam skin tone, tinggi 140-205 cm dan berat 40-130 kg. Daftar produk dan kontrol fitting bergulir di dalam panel; pada mobile, produk dapat digeser horizontal dan area studio dapat digulir tanpa memindahkan dokumen. Gesture di tengah panel tidak mengganti bab. Beri jeda lalu gulir di batas panel atau gunakan navigasi bab untuk melanjutkan. Model dapat diputar dengan drag/tombol panah, dilihat dari tiga sisi, diperbesar, atau diputar otomatis. Tersedia reset, lookbook maksimal 12 look, dan belanja seluruh outfit.
 - **Katalog** (`/#/catalog`): 12 produk contoh dengan foto asli, pencarian, kategori, filter model/harga/favorit, sortir harga/terbaru, muat lebih banyak, detail produk, pilihan warna/ukuran, panduan ukuran, coba di studio, dan tambah ke bag.
 - **Bag** (`/#/cart`): varian warna/ukuran, jumlah, hapus, favorit, ringkasan biaya, progress gratis ongkir demo, kupon demo `LMOR10`, serta unduh ringkasan lokal.
 - Menu mobile, navigasi keyboard, dialog native dengan focus trap/Escape, reduced motion, dan fallback ketika WebGL 2 tidak tersedia.
+- **Bahasa lokal**: ID, EN, dan Mandarin sederhana lewat `src/locales/id.json`, `en.json`, dan `zh.json`. Tidak memakai Google Translate atau API penerjemahan. Label, deskripsi produk, dialog, pencarian, ringkasan cart, narasi, dan atribut aksesibilitas mengikuti bahasa. Preferensi tersimpan dengan key `lmor-language-v1`. Mata uang tetap IDR; hanya format angka yang berubah.
+- **Atmosfer dan suara**: aurora, sorot lampu, partikel halus, dan orbit logo silver. Teks hero memakai typing dengan ruang tetap dan nama lengkap untuk pembaca layar. Aktifkan ikon suara di header untuk narasi Web Speech sesuai bahasa dan efek transisi Web Audio. Browser memerlukan aktivasi pengguna; suara mati pada awal sesi. Ketersediaan dan kualitas voice mengikuti perangkat. Narasi dibatalkan saat meninggalkan hero, mengganti bahasa, mematikan suara, atau menyembunyikan tab. Reduced motion menampilkan judul langsung dan menghentikan animasi dekoratif.
+
+## Bank keyword
+
+`outputs/lmor-seo-2026-11-20/LMOR-500000-keywords.zip` memuat CSV dengan tepat 500.000 kandidat unik dan metadata audiens/intent/status koleksi. `LMOR-prioritas-keyword.xlsx` berisi 899 kandidat awal, bukan seluruh bank. Panduan ada di `research/seo/strategi-seo.txt`. Jalankan `python3 scripts/generate-keywords.py` untuk menghasilkan ulang CSV/ZIP secara deterministik.
+
+Keyword dibuat dari taksonomi produk dan audiens, belum divalidasi volume, persaingan, atau peringkat. Istilah anak/keluarga/senior ditandai sesuai kebutuhan validasi koleksi. File riset tidak dibundel ke situs publik dan tidak dimasukkan sebagai keyword stuffing. Jumlah keyword tidak menjamin peringkat Google. Untuk SEO produksi, HashRouter perlu diganti dengan URL kategori/produk/bahasa yang bisa dirayapi, dilengkapi domain dan produk nyata.
 
 ## Penyimpanan dan batas demo
 
@@ -37,7 +45,7 @@ Data produk ada di `src/data.ts`. State ada di `src/state.tsx` dan disimpan deng
 
 **Foto katalog awal tetap dipertahankan.** Pakaian pada model menggunakan mesh 3D terpisah yang mengikuti perubahan tubuh, warna kain, dan detail berdasarkan referensi foto: grafis tangan pada kaos hitam, dasi, hood, serta lapel/ritsleting jaket. Geometri ini merupakan pendekatan visual; belum berupa scan produk atau pola jahit identik. Foto sampel tidak berubah mengikuti swatch warna yang dipilih.
 
-Proporsi dari tinggi/berat adalah estimasi visual, bukan pengukuran tubuh presisi atau simulasi fisika kain. Ukuran XS–XXL digunakan sebagai varian bag; belum menyimulasikan kelonggaran berdasarkan ukuran.
+Proporsi dari tinggi/berat adalah estimasi visual, bukan pengukuran tubuh presisi atau simulasi fisika kain. Ukuran XS-XXL digunakan sebagai varian bag; belum menyimulasikan kelonggaran berdasarkan ukuran.
 
 Nama, material, harga, panduan ukuran, promo, dan biaya pengiriman merupakan sampel. Checkout belum memproses pesanan, alamat, pembayaran, atau pengiriman. Tombol checkout menampilkan penjelasan demo dan unduhan ringkasan, tanpa membuat transaksi.
 

@@ -12,6 +12,7 @@ import '@fontsource/space-grotesk/latin-700.css'
 import { StoreProvider } from './state'
 import App from './App'
 import './styles.css'
+import './atmosphere.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HashRouter>

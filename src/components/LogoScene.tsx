@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from '../i18n'
 import { useEffect, useRef, useState, type MutableRefObject } from 'react'
 import * as THREE from 'three'
 import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js'
@@ -10,6 +11,7 @@ export default function LogoScene({
   progress: MutableRefObject<number>
   active?: boolean
 }) {
+  useLocale()
   const host = useRef<HTMLDivElement>(null),
     [ready, setReady] = useState(false)
   const activeRef = useRef(active)
@@ -38,15 +40,18 @@ export default function LogoScene({
       room = new RoomEnvironment(),
       env = pmrem.fromScene(room, 0.02)
     scene.environment = env.texture
-    scene.environmentIntensity = 2.2
+    scene.environmentIntensity = 1.65
     pmrem.dispose()
     room.dispose()
     const light = new THREE.DirectionalLight('#eff6ff', 3)
     light.position.set(-2, 3, 5)
     scene.add(light)
-    const rim = new THREE.DirectionalLight('#b6cde5', 4)
+    const rim = new THREE.DirectionalLight('#8eddd9', 4)
     rim.position.set(3, -1, -2)
     scene.add(rim)
+    const warm = new THREE.DirectionalLight('#e9c59e', 3.5)
+    warm.position.set(-3, -1, 2)
+    scene.add(warm)
     const group = new THREE.Group()
     scene.add(group)
     let geometry: THREE.ExtrudeGeometry | undefined,
@@ -78,7 +83,9 @@ export default function LogoScene({
       ([entry]) => {
         visible = entry.isIntersecting
       },
-      { rootMargin: '120px' },
+      {
+        rootMargin: '120px',
+      },
     )
     io.observe(el)
     void new SVGLoader()
@@ -103,11 +110,11 @@ export default function LogoScene({
         geometry.scale(scale, scale, scale)
         geometry.center()
         material = new THREE.MeshPhysicalMaterial({
-          color: '#d8e2e8',
+          color: '#dce8eb',
           metalness: 1,
-          roughness: 0.22,
-          clearcoat: 0.5,
-          clearcoatRoughness: 0.22,
+          roughness: 0.15,
+          clearcoat: 0.9,
+          clearcoatRoughness: 0.12,
         })
         mark = new THREE.Mesh(geometry, material)
         group.add(mark)
@@ -156,18 +163,20 @@ export default function LogoScene({
     <div
       className="logo-scene"
       role="img"
-      aria-label="Simbol L’MOR"
+      aria-label={tt('Simbol L’MOR')}
       data-ready={ready}
     >
       <div className="logo-canvas" ref={host} aria-hidden="true" />
-      {!ready && (
-        <img
-          className="logo-fallback"
-          src={brandSymbolUrl}
-          alt=""
-          width="667"
-          height="490"
-        />
+      {tn(
+        !ready && (
+          <img
+            className="logo-fallback"
+            src={brandSymbolUrl}
+            alt={tt('')}
+            width="667"
+            height="490"
+          />
+        ),
       )}
     </div>
   )

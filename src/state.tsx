@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from './i18n'
 import {
   createContext,
   useContext,
@@ -15,7 +16,9 @@ import {
   type Body,
   type Selection,
 } from './data'
-export type CartItem = Selection & { quantity: number }
+export type CartItem = Selection & {
+  quantity: number
+}
 export type SavedLook = {
   id: string
   top: Selection
@@ -137,10 +140,19 @@ export function addItems(cart: CartItem[], items: Selection[]): CartItem[] {
     return existing
       ? result.map((x) =>
           itemKey(x) === key
-            ? { ...x, quantity: Math.min(20, x.quantity + 1) }
+            ? {
+                ...x,
+                quantity: Math.min(20, x.quantity + 1),
+              }
             : x,
         )
-      : [...result, { ...item, quantity: 1 }]
+      : [
+          ...result,
+          {
+            ...item,
+            quantity: 1,
+          },
+        ]
   }, cart)
 }
 export function totals(cart: CartItem[], coupon = '') {
@@ -150,7 +162,12 @@ export function totals(cart: CartItem[], coupon = '') {
   )
   const discount = coupon === 'LMOR10' ? Math.round(subtotal * 0.1) : 0
   const shipping = subtotal === 0 || subtotal >= 500000 ? 0 : 20000
-  return { subtotal, discount, shipping, total: subtotal - discount + shipping }
+  return {
+    subtotal,
+    discount,
+    shipping,
+    total: subtotal - discount + shipping,
+  }
 }
 type Store = {
   state: Persisted
@@ -167,6 +184,7 @@ type Store = {
 }
 const Context = createContext<Store | null>(null)
 export function StoreProvider({ children }: { children: ReactNode }) {
+  useLocale()
   const [state, setState] = useState<Persisted>(() => {
     try {
       return readState(localStorage.getItem(STORAGE_KEY))
@@ -192,7 +210,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value: Store = {
     state,
     toast,
-    setBody: (body) => setState((s) => ({ ...s, body })),
+    setBody: (body) =>
+      setState((s) => ({
+        ...s,
+        body,
+      })),
     select: (selection) =>
       setState((s) => ({
         ...s,
@@ -200,7 +222,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           selection,
       })),
     add: (items) => {
-      setState((s) => ({ ...s, cart: addItems(s.cart, items) }))
+      setState((s) => ({
+        ...s,
+        cart: addItems(s.cart, items),
+      }))
       toast('Pilihan kamu masuk ke bag.')
     },
     updateQuantity: (key, quantity) =>
@@ -211,7 +236,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ? s.cart.filter((x) => itemKey(x) !== key)
             : s.cart.map((x) =>
                 itemKey(x) === key
-                  ? { ...x, quantity: Math.min(20, quantity) }
+                  ? {
+                      ...x,
+                      quantity: Math.min(20, quantity),
+                    }
                   : x,
               ),
       })),
@@ -228,9 +256,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         looks: [
           {
             id: crypto.randomUUID(),
-            top: { ...s.top },
-            bottom: { ...s.bottom },
-            body: { ...s.body },
+            top: {
+              ...s.top,
+            },
+            bottom: {
+              ...s.bottom,
+            },
+            body: {
+              ...s.body,
+            },
           },
           ...s.looks,
         ].slice(0, 12),
@@ -241,11 +275,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setState((s) => {
         const look = s.looks.find((x) => x.id === id)
         return look
-          ? { ...s, top: look.top, bottom: look.bottom, body: look.body }
+          ? {
+              ...s,
+              top: look.top,
+              bottom: look.bottom,
+              body: look.body,
+            }
           : s
       }),
     removeLook: (id) =>
-      setState((s) => ({ ...s, looks: s.looks.filter((x) => x.id !== id) })),
+      setState((s) => ({
+        ...s,
+        looks: s.looks.filter((x) => x.id !== id),
+      })),
     reset: () => {
       setState((s) => ({
         ...s,
@@ -258,9 +300,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }
   return (
     <Context.Provider value={value}>
-      {children}
+      {tn(children)}
       <div className={`toast ${message ? 'show' : ''}`} role="status">
-        {message}
+        {tn(message)}
       </div>
     </Context.Provider>
   )

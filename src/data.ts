@@ -1,4 +1,5 @@
 export type Category = 'tops' | 'bottoms'
+import { getLocale } from './i18n'
 export type Gender = 'male' | 'female'
 export type Garment =
   | 'tee'
@@ -255,11 +256,14 @@ export const skinTones = [
   '#543a2d',
 ]
 export const money = (n: number) =>
-  new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    maximumFractionDigits: 0,
-  }).format(n)
+  new Intl.NumberFormat(
+    { id: 'id-ID', en: 'en-US', zh: 'zh-CN' }[getLocale()],
+    {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0,
+    },
+  ).format(n)
 export const productById = (id: string) => products.find((p) => p.id === id)
 export const imageUrl = (p: Product) =>
   `${import.meta.env.BASE_URL}images/${p.image}.jpg`

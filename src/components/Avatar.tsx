@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from '../i18n'
 import { memo, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
@@ -6,7 +7,6 @@ import { productById, type Body, type Selection } from '../data'
 import { HumanAvatar } from '../vendor/humanforge/runtime'
 import { finishHuman, humanConfig, humanPackage } from '../realisticHuman'
 import { disposeGarmentDetails } from '../garmentDetails'
-
 type Props = {
   body: Body
   top: Selection
@@ -23,8 +23,15 @@ function Avatar({
   journey,
   active = true,
 }: Props) {
+  useLocale()
   const host = useRef<HTMLDivElement>(null)
-  const live = useRef({ body, top, bottom, journey, active })
+  const live = useRef({
+    body,
+    top,
+    bottom,
+    journey,
+    active,
+  })
   const targetAngle = useRef(-0.12),
     zoom = useRef(hero ? 3.25 : 3.55)
   const rotating = useRef(false),
@@ -34,7 +41,13 @@ function Avatar({
     [ready, setReady] = useState(false)
   const [auto, setAuto] = useState(false),
     [view, setView] = useState('front')
-  live.current = { body, top, bottom, journey, active }
+  live.current = {
+    body,
+    top,
+    bottom,
+    journey,
+    active,
+  }
   useEffect(() => {
     const el = host.current
     if (!el) return
@@ -150,7 +163,9 @@ function Avatar({
         inView = entry.isIntersecting
         dirty.current = true
       },
-      { rootMargin: '80px' },
+      {
+        rootMargin: '80px',
+      },
     )
     io.observe(el)
     async function configure() {
@@ -364,10 +379,11 @@ function Avatar({
     return (
       <div className="avatar-fallback">
         <Rotate3D size={44} />
-        <h3>Model manusia belum tersedia</h3>
+        <h3>{tn('Model manusia belum tersedia')}</h3>
         <p>
-          Pastikan koneksi aktif dan browser mendukung WebGL 2. Muat ulang
-          halaman untuk mencoba lagi.
+          {tn(
+            'Pastikan koneksi aktif dan browser mendukung WebGL 2. Muat ulang halaman untuk mencoba lagi.',
+          )}
         </p>
       </div>
     )
@@ -377,7 +393,9 @@ function Avatar({
         className="canvas-host"
         ref={host}
         role="img"
-        aria-label={`Avatar 3D ${body.gender === 'male' ? 'laki-laki' : 'perempuan'}, tinggi ${body.height} cm, berat ${body.weight} kg, mengenakan ${productById(top.id)?.name} dan ${productById(bottom.id)?.name}`}
+        aria-label={tt(
+          `Avatar 3D ${body.gender === 'male' ? 'laki-laki' : 'perempuan'}, tinggi ${body.height} cm, berat ${body.weight} kg, mengenakan ${productById(top.id)?.name} dan ${productById(bottom.id)?.name}`,
+        )}
         tabIndex={hero ? -1 : 0}
         onKeyDown={(e) => {
           if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
@@ -387,79 +405,86 @@ function Avatar({
           }
         }}
       />
-      {!ready && (
-        <div className="human-loading" role="status">
-          <span className="human-loading-ring" />
-          <span>Memuat model manusia…</span>
-        </div>
+      {tn(
+        !ready && (
+          <div className="human-loading" role="status">
+            <span className="human-loading-ring" />
+            <span>{tn('Memuat model manusia\u2026')}</span>
+          </div>
+        ),
       )}
-      {!hero && (
-        <>
-          <div className="view-pills" aria-label="Sudut pandang">
-            {[
-              ['front', 'Depan', -0.22],
-              ['side', 'Samping', Math.PI / 2],
-              ['back', 'Belakang', Math.PI],
-            ].map(([key, name, angle]) => (
+      {tn(
+        !hero && (
+          <>
+            <div className="view-pills" aria-label={tt('Sudut pandang')}>
+              {tn(
+                [
+                  ['front', 'Depan', -0.22],
+                  ['side', 'Samping', Math.PI / 2],
+                  ['back', 'Belakang', Math.PI],
+                ].map(([key, name, angle]) => (
+                  <button
+                    key={key}
+                    className={view === key ? 'active' : ''}
+                    onClick={() => setAngle(Number(angle), String(key))}
+                  >
+                    {tn(name)}
+                  </button>
+                )),
+              )}
+            </div>
+            <div className="camera-tools">
               <button
-                key={key}
-                className={view === key ? 'active' : ''}
-                onClick={() => setAngle(Number(angle), String(key))}
+                title={tt('Perbesar avatar')}
+                aria-label={tt('Perbesar avatar')}
+                onClick={() => {
+                  zoom.current = Math.max(1.65, zoom.current - 0.3)
+                  dirty.current = true
+                }}
               >
-                {name}
+                <ZoomIn size={17} />
               </button>
-            ))}
-          </div>
-          <div className="camera-tools">
-            <button
-              title="Perbesar avatar"
-              aria-label="Perbesar avatar"
-              onClick={() => {
-                zoom.current = Math.max(1.65, zoom.current - 0.3)
-                dirty.current = true
-              }}
-            >
-              <ZoomIn size={17} />
-            </button>
-            <button
-              title="Perkecil avatar"
-              aria-label="Perkecil avatar"
-              onClick={() => {
-                zoom.current = Math.min(4.8, zoom.current + 0.3)
-                dirty.current = true
-              }}
-            >
-              <ZoomOut size={17} />
-            </button>
-            <button
-              title="Putar otomatis"
-              aria-label="Putar otomatis"
-              aria-pressed={auto}
-              className={auto ? 'active' : ''}
-              onClick={() => {
-                rotating.current = !auto
-                setAuto(!auto)
-              }}
-            >
-              <Rotate3D size={17} />
-            </button>
-            <button
-              title="Reset kamera"
-              aria-label="Reset kamera"
-              onClick={() => {
-                setAngle(-0.22, 'front')
-                zoom.current = 3.55
-                rotating.current = false
-                setAuto(false)
-              }}
-            >
-              <RotateCcw size={16} />
-            </button>
-          </div>
-          <div className="drag-label">
-            <Rotate3D size={14} /> Geser untuk putar · 360°
-          </div>
-        </>
+              <button
+                title={tt('Perkecil avatar')}
+                aria-label={tt('Perkecil avatar')}
+                onClick={() => {
+                  zoom.current = Math.min(4.8, zoom.current + 0.3)
+                  dirty.current = true
+                }}
+              >
+                <ZoomOut size={17} />
+              </button>
+              <button
+                title={tt('Putar otomatis')}
+                aria-label={tt('Putar otomatis')}
+                aria-pressed={auto}
+                className={auto ? 'active' : ''}
+                onClick={() => {
+                  rotating.current = !auto
+                  setAuto(!auto)
+                }}
+              >
+                <Rotate3D size={17} />
+              </button>
+              <button
+                title={tt('Reset kamera')}
+                aria-label={tt('Reset kamera')}
+                onClick={() => {
+                  setAngle(-0.22, 'front')
+                  zoom.current = 3.55
+                  rotating.current = false
+                  setAuto(false)
+                }}
+              >
+                <RotateCcw size={16} />
+              </button>
+            </div>
+            <div className="drag-label">
+              <Rotate3D size={14} />
+              {tn(' Geser untuk putar \xB7 360\xB0')}
+            </div>
+          </>
+        ),
       )}
     </div>
   )

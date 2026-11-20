@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import gsap from 'gsap'
+import { playTransitionSound, stopNarration } from '../sound'
 import {
   publishHomeSection,
   registerSceneNavigation,
@@ -78,6 +79,8 @@ export default function useSceneExperience(
         return
       }
       const previous = layers[chapters.indexOf(current.current)]
+      stopNarration()
+      playTransitionSound()
       const moveFocus = previous.contains(document.activeElement)
       cancelAnimationFrame(focusFrame)
       motion?.kill()

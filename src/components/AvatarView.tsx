@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from '../i18n'
 import {
   lazy,
   Suspense,
@@ -10,18 +11,28 @@ import {
 import { Rotate3D } from 'lucide-react'
 const Avatar = lazy(() => import('./Avatar'))
 class AvatarBoundary extends Component<
-  { children: ReactNode },
-  { error: boolean }
+  {
+    children: ReactNode
+  },
+  {
+    error: boolean
+  }
 > {
-  state = { error: false }
+  state = {
+    error: false,
+  }
   static getDerivedStateFromError() {
-    return { error: true }
+    return {
+      error: true,
+    }
   }
   render() {
     return this.state.error ? (
       <div className="avatar-fallback">
         <Rotate3D size={40} />
-        <p>Preview gagal dimuat. Muat ulang halaman untuk mencoba lagi.</p>
+        <p>
+          {tn('Preview gagal dimuat. Muat ulang halaman untuk mencoba lagi.')}
+        </p>
       </div>
     ) : (
       this.props.children
@@ -29,6 +40,7 @@ class AvatarBoundary extends Component<
   }
 }
 export default function AvatarView(props: React.ComponentProps<typeof Avatar>) {
+  useLocale()
   const ref = useRef<HTMLDivElement>(null),
     [visible, setVisible] = useState(!!props.hero && props.active !== false)
   useEffect(() => {
@@ -40,7 +52,9 @@ export default function AvatarView(props: React.ComponentProps<typeof Avatar>) {
           observer.disconnect()
         }
       },
-      { rootMargin: '300px' },
+      {
+        rootMargin: '300px',
+      },
     )
     observer.observe(ref.current)
     return () => observer.disconnect()
@@ -48,17 +62,19 @@ export default function AvatarView(props: React.ComponentProps<typeof Avatar>) {
   return (
     <div ref={ref} className="avatar-view">
       <AvatarBoundary>
-        {visible && (
-          <Suspense
-            fallback={
-              <div className="avatar-loading">
-                <Rotate3D size={30} />
-                <span>Menyiapkan look kamu…</span>
-              </div>
-            }
-          >
-            <Avatar {...props} />
-          </Suspense>
+        {tn(
+          visible && (
+            <Suspense
+              fallback={
+                <div className="avatar-loading">
+                  <Rotate3D size={30} />
+                  <span>{tn('Menyiapkan look kamu\u2026')}</span>
+                </div>
+              }
+            >
+              <Avatar {...props} />
+            </Suspense>
+          ),
         )}
       </AvatarBoundary>
     </div>

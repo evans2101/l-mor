@@ -1,5 +1,5 @@
 :root {
-  font-family: Manrope, sans-serif;
+  font-family: Manrope, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   color: #eef1f2;
   background: #101518;
   font-synthesis: none;
@@ -10,7 +10,7 @@
   --muted: #b2bdc4;
   --line: #ffffff25;
   --lime: #c5d8e5;
-  --grotesk: 'Space Grotesk', sans-serif;
+  --grotesk: 'Space Grotesk', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
 * {
   box-sizing: border-box;

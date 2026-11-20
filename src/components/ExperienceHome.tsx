@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from '../i18n'
 import { lazy, Suspense, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Plus, ScanLine, ShoppingBag } from 'lucide-react'
@@ -7,8 +8,11 @@ import Studio from './Studio'
 import { scrollToSection, type HomeSection } from '../navigation'
 import { brandSymbolUrl } from '../brand'
 import useSceneExperience from './useSceneExperience'
+import HeroTitle from './HeroTitle'
+import Atmosphere from './Atmosphere'
 const LogoScene = lazy(() => import('./LogoScene'))
 export default function ExperienceHome() {
+  useLocale()
   const root = useRef<HTMLElement>(null)
   const { search } = useLocation()
   const [initial] = useState<HomeSection>(() => {
@@ -36,23 +40,20 @@ export default function ExperienceHome() {
         data-active={active === 'intro'}
         inert={active !== 'intro'}
         aria-hidden={active !== 'intro'}
-        aria-label="Dunia L’MOR"
+        aria-label={tt('Dunia L’MOR')}
       >
         <div className="story-pin">
+          <Atmosphere />
           <div className="story-atmosphere" aria-hidden="true">
             <div className="light-beam" />
             <div className="floor-orbit" />
             <div className="floor-orbit orbit-outer" />
           </div>
           <div className="story-edition">
-            <span>EVERYDAY COLLECTION</span>
-            <span>EST. TO BE YOURSELF / 2026</span>
+            <span>{tn('EVERYDAY COLLECTION')}</span>
+            <span>{tn('EST. TO BE YOURSELF / 2026')}</span>
           </div>
-          <h1 className="story-heading" tabIndex={-1}>
-            <span>GAYA</span>
-            <span className="outline-text">KAMU.</span>
-            <span className="hero-heading-accessible">Aturan kamu.</span>
-          </h1>
+          <HeroTitle active={active === 'intro'} />
           <div className="story-model">
             <AvatarView
               hero
@@ -64,26 +65,33 @@ export default function ExperienceHome() {
             />
           </div>
           <div className="story-opening-copy">
-            <span className="eyebrow">ATURAN KAMU.</span>
+            <span className="premium-signature">
+              <i />
+              {tn('Rasa premium. Harga bersahabat.')}
+            </span>
+            <span className="eyebrow">{tn('ATURAN KAMU.')}</span>
             <p>
-              Everyday pieces. Extraordinary you.
+              {tn('Everyday pieces. Extraordinary you.')}
               <br />
-              Temukan outfit yang terasa kamu banget.
+              {tn('Temukan outfit yang terasa kamu banget.')}
             </p>
             <div className="story-actions">
               <Link className="btn btn-white" to="/?studio=1">
-                <ScanLine size={16} /> Explore 5D Studio
+                <ScanLine size={16} />
+                {tn(' Explore 5D Studio')}
               </Link>
               <Link className="story-text-link" to="/catalog">
-                Lihat koleksi <Plus size={16} />
+                {tn('Lihat koleksi ')}
+                <Plus size={16} />
               </Link>
             </div>
           </div>
           <div className="story-bottom">
             <span className="scroll-cue">
-              <span className="scroll-line" /> SCROLL TO EXPLORE
+              <span className="scroll-line" />
+              {tn(' SCROLL TO EXPLORE')}
             </span>
-            <span>YOUR BODY. YOUR STYLE. YOUR L’MOR.</span>
+            <span>{tn('YOUR BODY. YOUR STYLE. YOUR L\u2019MOR.')}</span>
           </div>
         </div>
       </section>
@@ -99,7 +107,7 @@ export default function ExperienceHome() {
           data-scene-scroll
           tabIndex={0}
           role="region"
-          aria-label="5D Studio, gulir untuk melihat seluruh kontrol"
+          aria-label={tt('5D Studio, gulir untuk melihat seluruh kontrol')}
         >
           <Studio active={active === 'studio'} />
         </div>
@@ -114,82 +122,92 @@ export default function ExperienceHome() {
         aria-labelledby="closing-title"
       >
         <div className="closing-pin">
+          <Atmosphere finale />
           <div className="closing-halo" aria-hidden="true" />
           <div className="closing-top">
-            <span className="eyebrow">A LITTLE MORE THAN CLOTHES.</span>
-            <span>THE NEXT CHAPTER IS YOURS.</span>
+            <span className="eyebrow">{tn('A LITTLE MORE THAN CLOTHES.')}</span>
+            <span>{tn('THE NEXT CHAPTER IS YOURS.')}</span>
           </div>
           <div className="closing-copy">
             <h2 id="closing-title" tabIndex={-1}>
-              Wear less doubt.
+              {tn('Wear less doubt.')}
               <br />
-              <em>Wear more you.</em>
+              <em>{tn('Wear more you.')}</em>
             </h2>
             <p>
-              Gaya bukan soal jadi orang lain.
+              {tn('Gaya bukan soal jadi orang lain.')}
               <br />
-              Temukan versi paling nyaman dari dirimu.
+              {tn('Temukan versi paling nyaman dari dirimu.')}
             </p>
           </div>
           <div className="closing-logo">
-            {loadLogo && (
-              <Suspense
-                fallback={
-                  <img
-                    className="logo-fallback"
-                    src={brandSymbolUrl}
-                    alt="Logo L’MOR"
-                    width="667"
-                    height="490"
+            <div className="logo-orbit logo-orbit-one" aria-hidden="true" />
+            <div className="logo-orbit logo-orbit-two" aria-hidden="true" />
+            {tn(
+              loadLogo && (
+                <Suspense
+                  fallback={
+                    <img
+                      className="logo-fallback"
+                      src={brandSymbolUrl}
+                      alt={tt('Logo L’MOR')}
+                      width="667"
+                      height="490"
+                    />
+                  }
+                >
+                  <LogoScene
+                    progress={logoProgress}
+                    active={active === 'about'}
                   />
-                }
-              >
-                <LogoScene
-                  progress={logoProgress}
-                  active={active === 'about'}
-                />
-              </Suspense>
+                </Suspense>
+              ),
             )}
           </div>
           <div className="closing-actions">
             <Link className="btn btn-white" to="/catalog">
-              <ShoppingBag size={17} /> Belanja sekarang
+              <ShoppingBag size={17} />
+              {tn(' Belanja sekarang')}
             </Link>
             <Link className="btn btn-outline" to="/?studio=1">
-              Buat look kamu <Plus size={16} />
+              {tn('Buat look kamu ')}
+              <Plus size={16} />
             </Link>
           </div>
           <div className="closing-bottom">
-            <span>NEVER FIT IN.</span>
-            <span>ALWAYS FEEL LIKE YOU.</span>
+            <span>{tn('NEVER FIT IN.')}</span>
+            <span>{tn('ALWAYS FEEL LIKE YOU.')}</span>
           </div>
         </div>
       </section>
       <nav
         className="chapter-dock"
         data-chapter={active}
-        aria-label="Navigasi bab"
+        aria-label={tt('Navigasi bab')}
       >
         <button
           className={active === 'intro' ? 'active' : ''}
           aria-current={active === 'intro' ? 'location' : undefined}
           onClick={() => scrollToSection('intro')}
         >
-          <span /> INTRO
+          <span />
+          {tn(' INTRO')}
         </button>
         <button
           className={active === 'studio' ? 'active' : ''}
           aria-current={active === 'studio' ? 'location' : undefined}
           onClick={() => scrollToSection('studio')}
         >
-          <span /> THE STUDIO
+          <span />
+          {tn(' THE STUDIO')}
         </button>
         <button
           className={active === 'about' ? 'active' : ''}
           aria-current={active === 'about' ? 'location' : undefined}
           onClick={() => scrollToSection('about')}
         >
-          <span /> BEYOND
+          <span />
+          {tn(' BEYOND')}
         </button>
       </nav>
     </main>

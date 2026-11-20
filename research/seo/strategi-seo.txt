@@ -1,0 +1,84 @@
+L’MOR / Rencana penggunaan keyword
+Disusun 20 November 2026. Posisi brand: premium dengan harga terjangkau.
+
+HASIL
+500.000 kandidat keyword Bahasa Indonesia, unik setelah normalisasi Unicode,
+huruf, spasi, dan tanda baca. Ada 899 kandidat prioritas editorial di Excel.
+CSV lengkap berisi audiens, kelompok produk, intent, status koleksi, cluster,
+dan prioritas. Volume bulanan sengaja kosong. Tidak ada angka CPC, persaingan,
+volume, konversi, atau peringkat yang diukur dalam riset ini.
+
+PENGGUNAAN
+Mulai dari P1 untuk identitas brand dan kebutuhan pembeli yang paling jelas.
+Validasi P2 yang sesuai produk nyata. P3 menjadi backlog eksperimen atau
+pengembangan koleksi. Gabungkan keyword dengan maksud serupa ke satu halaman
+yang berguna. Satu keyword tidak harus berarti satu halaman.
+
+P1 awal: lmor, brand lmor, lmor fashion, katalog lmor, koleksi lmor,
+fashion premium terjangkau, brand fashion premium harga terjangkau,
+kaos premium pria, kaos premium wanita, kaos oversize pria,
+kaos oversize wanita, hoodie unisex, kemeja pria premium,
+kemeja wanita premium, celana chino pria, celana cargo pria,
+celana jeans wanita, cara memilih ukuran baju online.
+
+AUDIENS DAN KEBENARAN PRODUK
+Umum 80.000; pria dewasa 70.000; wanita dewasa 70.000; anak muda 60.000;
+remaja 45.000; mahasiswa 35.000; ayah 25.000; ibu 25.000;
+orang tua 25.000; anak laki-laki 25.000; anak perempuan 25.000;
+keluarga 15.000. Kategori produk tertentu pada bank adalah rencana koleksi.
+
+Situs sekarang berisi 12 produk demo dewasa. Jangan mempromosikan koleksi anak
+atau keluarga sebagai stok tersedia. Koleksi remaja dan senior memerlukan
+validasi ukuran/fit, foto produk nyata, kenyamanan, dan kebutuhan pengguna.
+Jangan menyamakan kategori usia dengan kualitas atau kemampuan daya beli.
+Gunakan bahasa yang ramah, ukuran yang jelas, dan foto yang mewakili pembeli.
+
+PETA HALAMAN UNTUK PRODUKSI
+1. Beranda: identitas L’MOR, positioning, manfaat, koleksi nyata.
+2. Kategori: baju, celana, kaos, kemeja, hoodie, denim, chino, cargo.
+3. Produk: foto asli, komposisi, ukuran rinci, harga/stock aktual, perawatan.
+4. Panduan ukuran: cara mengukur tubuh dan membandingkan ukuran produk.
+5. Padu padan: look kuliah, kerja kasual, akhir pekan, dan pakaian basic.
+6. Tentang brand, kontak, pengiriman, retur, dan kebijakan privasi yang nyata.
+7. Anak/keluarga/senior hanya setelah koleksi dan informasi pendukung tersedia.
+
+RENCANA 90 HARI
+Hari 1-14: konfirmasi domain, koleksi nyata, positioning harga, ukuran, foto,
+dan kebutuhan audiens. Validasi 30-50 seed dari P1/P2 dengan Keyword Planner.
+Catat negara, bahasa, periode, dan sumber setiap metrik yang benar-benar didapat.
+
+Hari 15-30: siapkan URL produksi yang bisa dirayapi tanpa fragmen hash, misalnya
+/id/koleksi/kaos, /en/collection/tees, /zh/collection/tees. Gunakan HTML yang
+memuat isi utama, canonical yang tepat, sitemap, dan hreflang untuk padanan
+bahasa. Daftarkan domain yang sudah disetujui di Search Console. Jangan isi
+sitemap dengan tautan produk/halaman yang belum ada.
+
+Hari 31-60: terbitkan halaman kategori utama dan 4 panduan yang menjawab
+pertanyaan ukuran, bahan, perawatan, dan padu padan. Tautkan antarhalaman secara
+relevan. Satu topik utama per halaman; judul dan deskripsi harus spesifik.
+Gunakan structured data hanya untuk informasi yang benar-benar terlihat dan
+valid. Demo ini tidak diberi klaim stok, review, rating, atau transaksi palsu.
+
+Hari 61-90: gunakan Search Console untuk melihat query nyata, impresi, klik,
+CTR, dan halaman yang terindeks. Bandingkan periode setara; perbaiki halaman
+yang sudah mendapatkan permintaan. Ukur penambahan cart dan pembelian setelah
+checkout produksi tersedia. Jangan menyimpulkan permintaan dari jumlah ide.
+
+BAHASA SITUS SEKARANG
+ID, EN, dan Mandarin sederhana memakai JSON lokal yang ditulis manual.
+Pencarian produk memahami nama terjemahan. Pilihan bahasa tersimpan di browser.
+Pergantian JSON dan atribut lang membantu pengalaman pengguna, tetapi belum
+membuat tiga URL bahasa terpisah untuk pengindeksan. HashRouter dan data demo
+masih menjadi batas SEO produksi. Tidak ada janji posisi pertama Google.
+
+YANG DIHINDARI
+Jangan tempel 500.000 keyword di halaman, teks tersembunyi, atau meta keywords.
+Jangan otomatis membuat 500.000 halaman tanpa nilai bagi pembaca. Keyword
+stuffing dan scaled content abuse termasuk kebijakan spam Google. Google
+tidak menggunakan meta keywords sebagai sinyal pengindeksan atau peringkat.
+
+SUMBER PRIMER
+https://developers.google.com/search/docs/essentials/spam-policies
+https://developers.google.com/search/docs/crawling-indexing/special-tags
+https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites

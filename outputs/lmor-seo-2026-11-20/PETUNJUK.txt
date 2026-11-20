@@ -1,0 +1,15 @@
+L’MOR - BANK 500.000 KANDIDAT KEYWORD
+
+Posisi brand: premium dengan harga terjangkau.
+
+Semua keyword adalah ide riset yang dibuat secara kombinatorial dan dideduplikasi setelah normalisasi huruf, spasi, dan tanda baca. Belum ada verifikasi volume, CPC, persaingan, peringkat, atau konversi. Kolom volume sengaja kosong. P1 adalah istilah awal pilihan editorial; P2 kategori dewasa yang dekat dengan katalog demo; P3 long-tail atau pengembangan koleksi. Prioritas bukan skor Google.
+
+Katalog situs saat ini adalah demo dewasa. Anak, keluarga, remaja, dan senior memiliki status validasi terpisah. Jangan menjanjikan ukuran, stok, bahan, harga, atau layanan yang belum tersedia. Keyword bukan klaim bahwa produk sudah dijual.
+
+Gunakan kelompok topik untuk merancang halaman/konten yang berguna. Jangan tempel daftar ini ke halaman, teks tersembunyi, meta keywords, atau otomatis membuat 500.000 halaman. Google tidak memakai meta keywords dan keyword stuffing melanggar kebijakan spam. Pilih sedikit target yang paling relevan, validasi dengan Keyword Planner dan Search Console, lalu tulis konten yang menjawab kebutuhan pembeli.
+
+Sumber panduan: https://developers.google.com/search/docs/essentials/spam-policies
+https://developers.google.com/search/docs/crawling-indexing/special-tags
+https://developers.google.com/search/docs/fundamentals/creating-helpful-content
+
+Struktur saat ini memakai hash routing dan produk demo. Untuk SEO produksi, perlukan domain final, URL kategori/produk yang bisa diindeks tanpa fragmen hash, konten HTML yang dapat dirayapi, detail produk nyata, dan Search Console. Tidak ada jaminan peringkat satu.

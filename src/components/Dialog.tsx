@@ -1,3 +1,4 @@
+import { useLocale, translateNode as tn, translateText as tt } from '../i18n'
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
@@ -13,6 +14,7 @@ export default function Dialog({
   onClose: () => void
   wide?: boolean
 }) {
+  useLocale()
   const titleId = useId()
   const ref = useRef<HTMLDialogElement>(null)
   useEffect(() => {
@@ -49,16 +51,16 @@ export default function Dialog({
       }}
     >
       <div className="dialog-heading">
-        <h2 id={titleId}>{title}</h2>
+        <h2 id={titleId}>{tn(title)}</h2>
         <button
           className="icon-btn"
-          aria-label="Tutup dialog"
+          aria-label={tt('Tutup dialog')}
           onClick={onClose}
         >
           <X size={20} />
         </button>
       </div>
-      {children}
+      {tn(children)}
     </dialog>,
     document.body,
   )
