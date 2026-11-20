@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
+import { useLocation } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import 'lenis/dist/lenis.css'
@@ -9,7 +10,9 @@ let engine: Lenis | undefined
 let locks = 0
 
 export function useSmoothScroll() {
+  const { pathname } = useLocation()
   useEffect(() => {
+    if (pathname === '/') return
     const instance = new Lenis({
       lerp: 0.075,
       smoothWheel: true,
@@ -28,7 +31,7 @@ export function useSmoothScroll() {
       instance.destroy()
       if (engine === instance) engine = undefined
     }
-  }, [])
+  }, [pathname])
 }
 
 export function scrollSmoothlyTo(

@@ -1,103 +1,104 @@
 import { test, expect } from '@playwright/test'
 
-test('header smoothly navigates sections, repeats clicks and follows manual scrolling', async ({
+test('home swaps blurred scenes in one viewport; nested controls and navigation remain usable', async ({
   page,
 }) => {
   test.setTimeout(60000)
-  await page.goto('/')
-  await expect(
-    page.locator('.story-model .avatar[data-ready="true"]'),
-  ).toBeVisible({ timeout: 20000 })
-  await expect(page.locator('html')).toHaveClass(/lenis/)
-  expect(
-    await page.evaluate(
-      () => getComputedStyle(document.documentElement).scrollbarWidth,
-    ),
-  ).toBe('none')
-  await page.evaluate(() => {
-    const samples: number[] = []
-    ;(window as unknown as { scrollSamples: number[] }).scrollSamples = samples
-    window.addEventListener('scroll', () => samples.push(scrollY), {
-      passive: true,
-    })
-  })
-  const nav = page.getByRole('navigation', { name: 'Navigasi utama' })
-  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
-  await expect
-    .poll(
-      () =>
-        page
-          .locator('#studio')
-          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
+  const scene = async (name: string) => {
+    await expect(page.locator('.experience-fixed')).toHaveAttribute(
+      'data-active-scene',
+      name,
+    )
+    await expect(page.locator('.experience-fixed')).toHaveAttribute(
+      'data-transitioning',
+      'false',
       { timeout: 15000 },
     )
-    .toBe(115)
+    expect(await page.evaluate(() => scrollY)).toBe(0)
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollHeight <= innerHeight + 1,
+      ),
+    ).toBe(true)
+  }
+  await page.goto('/')
+  await scene('intro')
+  const nav = page.getByRole('navigation', { name: 'Navigasi utama' })
+  await page.mouse.move(600, 400)
+  await page.mouse.wheel(0, 600)
+  await scene('studio')
   await expect(
     nav.getByRole('link', { name: '5D Studio', exact: true }),
   ).toHaveAttribute('aria-current', 'location')
-  await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
+  await expect(page.locator('#intro')).toHaveAttribute('inert', '')
+  await expect(page.locator('#intro')).toBeHidden()
+  const grid = page.locator('.wardrobe-grid')
+  const box = await grid.boundingBox()
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2)
+  await page.mouse.wheel(0, 320)
   await expect
-    .poll(
-      () =>
-        page
-          .locator('#about')
-          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
-      { timeout: 15000 },
-    )
-    .toBe(0)
+    .poll(() => grid.evaluate((el) => el.scrollTop))
+    .toBeGreaterThan(0)
+  await scene('studio')
+  await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
+  await scene('about')
   await expect(
     nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }),
   ).toHaveAttribute('aria-current', 'location')
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
-  await expect(
-    nav.getByRole('link', { name: 'Beranda', exact: true }),
-  ).toHaveAttribute('aria-current', 'location')
-  // The URL still points to about; clicking it again must still scroll.
+  await nav.getByRole('link', { name: 'Beranda', exact: true }).click()
+  await scene('intro')
+  await page.locator('main').focus()
+  await page.keyboard.press('PageDown')
+  await scene('studio')
+  await page.keyboard.press('PageUp')
+  await scene('intro')
+  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
   await nav.getByRole('link', { name: 'Tentang L’MOR', exact: true }).click()
-  await expect
-    .poll(
-      () =>
-        page
-          .locator('#about')
-          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
-      { timeout: 15000 },
-    )
-    .toBe(0)
-  const samples = await page.evaluate(
-    () => (window as unknown as { scrollSamples: number[] }).scrollSamples,
-  )
-  expect(new Set(samples).size).toBeGreaterThan(4)
-  expect(samples.some((y) => y > 100 && y < 1500)).toBe(true)
+  await scene('about')
   await nav.getByRole('link', { name: 'Koleksi', exact: false }).click()
   await expect(page).toHaveURL(/catalog/)
-  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
+  await expect(page.locator('.catalog-page')).toBeVisible()
   await expect
-    .poll(
-      () =>
-        page
-          .locator('#studio')
-          .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
-      { timeout: 15000 },
-    )
-    .toBe(115)
-  await nav.getByRole('link', { name: 'Beranda', exact: true }).click()
-  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0)
-  await expect(page.locator('html')).not.toHaveClass(/lenis-scrolling/)
-  await page.mouse.move(600, 500)
-  await page.mouse.wheel(0, 600)
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100)
-  await expect(page.locator('html')).not.toHaveClass(/lenis-scrolling/)
-  await expect.poll(() => page.evaluate(() => scrollY)).toBe(510)
-  expect(
-    await page
-      .locator('.story-pin')
-      .evaluate((el) => Math.round(el.getBoundingClientRect().top) || 0),
-  ).toBe(0)
-  expect(
-    await page
-      .locator('.story-heading')
-      .evaluate((el) => Number(getComputedStyle(el).opacity)),
-  ).toBeLessThan(1)
+    .poll(() => page.evaluate(() => getComputedStyle(document.body).overflowY))
+    .not.toBe('hidden')
+  await nav.getByRole('link', { name: '5D Studio', exact: true }).click()
+  await scene('studio')
+})
+
+test('mobile swipe changes scenes without moving the document', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  })
+  const page = await context.newPage()
+  await page.goto('/')
+  const cdp = await context.newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x: 340, y: 590 }],
+  })
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchMove',
+    touchPoints: [{ x: 340, y: 280 }],
+  })
+  await cdp.send('Input.dispatchTouchEvent', {
+    type: 'touchEnd',
+    touchPoints: [],
+  })
+  await expect(page.locator('.experience-fixed')).toHaveAttribute(
+    'data-active-scene',
+    'studio',
+  )
+  await expect(page.locator('.experience-fixed')).toHaveAttribute(
+    'data-transitioning',
+    'false',
+    { timeout: 15000 },
+  )
+  expect(await page.evaluate(() => scrollY)).toBe(0)
+  await context.close()
 })
 
 test('studio → personalized outfit → lookbook → persistent bag → demo summary', async ({
@@ -244,6 +245,8 @@ test('corrupt local storage recovers without a blank screen', async ({
 test('all pages fit narrow, mobile, tablet and desktop viewports', async ({
   page,
 }) => {
+  test.setTimeout(90000)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   for (const width of [320, 390, 540, 768, 1024, 1440]) {
@@ -258,6 +261,18 @@ test('all pages fit narrow, mobile, tablet and desktop viewports', async ({
         `overflow at ${width}px ${route}`,
       ).toBe(true)
       if (route === '/') {
+        await page
+          .getByRole('button', { name: 'THE STUDIO', exact: true })
+          .click()
+        await expect(page.locator('.experience-fixed')).toHaveAttribute(
+          'data-active-scene',
+          'studio',
+        )
+        await expect(page.locator('.experience-fixed')).toHaveAttribute(
+          'data-transitioning',
+          'false',
+          { timeout: 15000 },
+        )
         const grid = await page.locator('.wardrobe-grid').boundingBox(),
           controls = await page.locator('.garment-controls').boundingBox()
         expect(
@@ -285,7 +300,7 @@ test('mobile: menu, live canvas changes, catalog filter and cart', async ({
     page.getByRole('button', { name: 'Buka navigasi', exact: true }),
   ).toBeVisible()
   const canvas = page.locator('#studio canvas')
-  await canvas.scrollIntoViewIfNeeded()
+  await page.locator('#studio .avatar-view').scrollIntoViewIfNeeded()
   await expect(canvas).toBeVisible()
   await expect(page.locator('#studio .avatar[data-ready="true"]')).toBeVisible({
     timeout: 20000,

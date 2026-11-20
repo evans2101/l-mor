@@ -5,11 +5,15 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { brandSymbolUrl } from '../brand'
 export default function LogoScene({
   progress,
+  active = true,
 }: {
   progress: MutableRefObject<number>
+  active?: boolean
 }) {
   const host = useRef<HTMLDivElement>(null),
     [ready, setReady] = useState(false)
+  const activeRef = useRef(active)
+  activeRef.current = active
   useEffect(() => {
     const el = host.current
     if (!el) return
@@ -118,6 +122,7 @@ export default function LogoScene({
       })
     renderer.setAnimationLoop((time) => {
       if (
+        !activeRef.current ||
         !visible ||
         document.hidden ||
         !mark ||

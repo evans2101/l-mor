@@ -23,8 +23,8 @@ npm run test:e2e    # navigasi scroll, studio sampai cart, responsive dan aksesi
 
 ## Halaman dan fitur
 
-- **Beranda**: tiga bab dengan panggung penuh layar, tipografi besar, model manusia yang berputar mengikuti scroll, transisi ke studio, dan penutup simbol L’MOR 3D berbahan silver dari logo yang diberikan pemilik proyek. Lenis untuk inertia scroll, CSS sticky, serta GSAP ScrollTrigger menjaga kontrol mouse, sentuhan, dan keyboard. Scrollbar halaman disembunyikan. Perpindahan bab memakai fade dan gerak konten, tanpa panel atau slogan yang menutup layar. Header melakukan smooth scroll ke section, termasuk saat kembali dari katalog/cart, dan menu aktif mengikuti posisi scroll.
-- **5D Studio**: baju + celana sekaligus, kategori dan warna, ukuran masing-masing produk, model male/female, enam skin tone, tinggi 140–205 cm dan berat 40–130 kg. Pada mobile, pilihan produk dapat digeser horizontal. Model dapat diputar dengan drag/tombol panah, dilihat dari tiga sisi, diperbesar, atau diputar otomatis. Tersedia reset, lookbook maksimal 12 look, dan belanja seluruh outfit.
+- **Beranda**: satu panggung tetap setinggi layar. Wheel/trackpad, swipe vertikal, Page Up/Down, atau tombol navigasi mengganti konten hero → studio → logo 3D di posisi yang sama dengan crossfade, blur halus, dan perubahan skala. Dokumen tidak bergulir. Tidak ada panel atau slogan perantara. Header mengikuti konten aktif dan tautan langsung `/#/?studio=1` serta `/#/?about=1` tetap bekerja. Konten nonaktif dibuat inert dan disembunyikan dari pembaca layar. Preferensi reduced motion memakai perpindahan instan.
+- **5D Studio**: baju + celana sekaligus, kategori dan warna, ukuran masing-masing produk, model male/female, enam skin tone, tinggi 140–205 cm dan berat 40–130 kg. Daftar produk dan kontrol fitting bergulir di dalam panel; pada mobile, produk dapat digeser horizontal dan area studio dapat digulir tanpa memindahkan dokumen. Gesture di tengah panel tidak mengganti bab. Beri jeda lalu gulir di batas panel atau gunakan navigasi bab untuk melanjutkan. Model dapat diputar dengan drag/tombol panah, dilihat dari tiga sisi, diperbesar, atau diputar otomatis. Tersedia reset, lookbook maksimal 12 look, dan belanja seluruh outfit.
 - **Katalog** (`/#/catalog`): 12 produk contoh dengan foto asli, pencarian, kategori, filter model/harga/favorit, sortir harga/terbaru, muat lebih banyak, detail produk, pilihan warna/ukuran, panduan ukuran, coba di studio, dan tambah ke bag.
 - **Bag** (`/#/cart`): varian warna/ukuran, jumlah, hapus, favorit, ringkasan biaya, progress gratis ongkir demo, kupon demo `LMOR10`, serta unduh ringkasan lokal.
 - Menu mobile, navigasi keyboard, dialog native dengan focus trap/Escape, reduced motion, dan fallback ketika WebGL 2 tidak tersedia.
@@ -46,15 +46,16 @@ Nama, material, harga, panduan ukuran, promo, dan biaya pengiriman merupakan sam
 ```text
 src/
   App.tsx                   Header, routing, katalog, bag, footer
-  navigation.ts             Smooth section navigation dan menu aktif
-  smoothScroll.ts           Lenis, sinkronisasi animasi, dan scroll lock modal
+  navigation.ts             Navigasi konten aktif dan sinkronisasi header
+  smoothScroll.ts           Scroll katalog/bag dan scroll lock modal
   data.ts                   Produk, varian, default model
   state.tsx                 State lokal tervalidasi + perhitungan bag
   realisticHuman.ts         Pemetaan tubuh, material, pakaian, dan pose
   garmentDetails.ts         Detail pakaian yang mengikuti rig tubuh
   vendor/humanforge/        Runtime manusia berlisensi MIT
   components/
-    ExperienceHome.tsx      Tiga bab dan choreography scroll
+    ExperienceHome.tsx      Tiga konten dalam satu panggung tetap
+    useSceneExperience.ts   Wheel, swipe, keyboard, blur/fade, dan cleanup
     LogoScene.tsx           Logo bevel silver 3D
     Avatar.tsx              Renderer, pencahayaan, pose, idle motion
     AvatarView.tsx          Lazy loading, intersection, error boundary
@@ -71,7 +72,7 @@ Untuk mengganti koleksi, edit `src/data.ts` dan tambahkan foto di `public/images
 
 ## Performa dan deployment
 
-Model dan tekstur dimuat lazy serta dibagi melalui cache antarscene. Morph tubuh dihitung ketika kontrol berubah; mesh dasar dipakai ulang. Render dibatasi sekitar 30 fps dan dijeda ketika offscreen/tab tidak aktif. Pixel ratio dibatasi 1.5, shadow map 1024 px. Reduced motion mematikan choreography scroll dan idle motion serta memakai perpindahan section langsung. Semua font, foto, dan aset model disajikan dari file lokal.
+Model dan tekstur dimuat lazy serta dibagi melalui cache antarscene. Morph tubuh dihitung ketika kontrol berubah; mesh dasar dipakai ulang. Render dibatasi sekitar 30 fps dan dijeda ketika konten tidak aktif, offscreen, atau tab tidak aktif. Blur hanya digunakan selama perpindahan konten. Pixel ratio dibatasi 1.5, shadow map 1024 px. Reduced motion mematikan transisi blur dan idle motion serta memakai perpindahan konten langsung. Semua font, foto, dan aset model disajikan dari file lokal.
 
 Runtime HumanForge dipin ke commit `2226df1f50a04c5a8e1c02ea33780d28337dfbb1`. Untuk menyiapkan ulang proxy pakaian dari paket sumber yang disertakan:
 

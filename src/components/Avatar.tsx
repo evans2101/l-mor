@@ -12,11 +12,19 @@ type Props = {
   top: Selection
   bottom: Selection
   hero?: boolean
+  active?: boolean
   journey?: React.MutableRefObject<number>
 }
-function Avatar({ body, top, bottom, hero = false, journey }: Props) {
+function Avatar({
+  body,
+  top,
+  bottom,
+  hero = false,
+  journey,
+  active = true,
+}: Props) {
   const host = useRef<HTMLDivElement>(null)
-  const live = useRef({ body, top, bottom, journey })
+  const live = useRef({ body, top, bottom, journey, active })
   const targetAngle = useRef(-0.12),
     zoom = useRef(hero ? 3.25 : 3.55)
   const rotating = useRef(false),
@@ -26,7 +34,7 @@ function Avatar({ body, top, bottom, hero = false, journey }: Props) {
     [ready, setReady] = useState(false)
   const [auto, setAuto] = useState(false),
     [view, setView] = useState('front')
-  live.current = { body, top, bottom, journey }
+  live.current = { body, top, bottom, journey, active }
   useEffect(() => {
     const el = host.current
     if (!el) return
@@ -146,13 +154,13 @@ function Avatar({ body, top, bottom, hero = false, journey }: Props) {
     )
     io.observe(el)
     async function configure() {
-      if (!human || disposed) return
+      if (!human || disposed || !live.current.active) return
       const request = ++version,
         current = live.current
       await human.setConfig(
         humanConfig(current.body, current.top, current.bottom),
       )
-      if (disposed || request !== version) return
+      if (disposed || request !== version || !live.current.active) return
       renderReady = false
       pose = finishHuman(human, current.body, current.top, current.bottom, hero)
       human.group.visible = true
@@ -211,6 +219,7 @@ function Avatar({ body, top, bottom, hero = false, journey }: Props) {
     renderer.domElement.addEventListener('webglcontextlost', lost)
     renderer.setAnimationLoop((time) => {
       if (
+        !live.current.active ||
         !inView ||
         document.hidden ||
         time - lastFrame < 32 ||
@@ -336,6 +345,7 @@ function Avatar({ body, top, bottom, hero = false, journey }: Props) {
   useEffect(() => {
     configureRef.current()
   }, [
+    active,
     body.gender,
     body.height,
     body.weight,

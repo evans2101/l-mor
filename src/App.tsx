@@ -142,31 +142,27 @@ function Header() {
 }
 function ScrollToPage() {
   const { pathname, search, key } = useLocation()
+  const previousPath = useRef<string | undefined>(undefined)
   useEffect(() => {
-    // Wait for the new route and its scroll scenes to mount before navigating.
-    let cancelled = false,
-      frame = 0
-    document.fonts.ready.then(() => {
-      if (cancelled) return
-      frame = requestAnimationFrame(() => {
-        if (pathname === '/') {
-          const params = new URLSearchParams(search)
-          scrollToSection(
-            params.has('studio')
-              ? 'studio'
-              : params.has('about')
-                ? 'about'
-                : 'intro',
-          )
-        } else {
-          scrollSmoothlyTo(0, true)
-        }
-      })
-    })
-    return () => {
-      cancelled = true
-      cancelAnimationFrame(frame)
+    const sameHome = previousPath.current === '/' && pathname === '/'
+    previousPath.current = pathname
+    if (pathname === '/') {
+      // A newly mounted home already selects its initial scene from the URL.
+      // Only an explicit in-home navigation should request another transition.
+      if (sameHome) {
+        const params = new URLSearchParams(search)
+        scrollToSection(
+          params.has('studio')
+            ? 'studio'
+            : params.has('about')
+              ? 'about'
+              : 'intro',
+        )
+      }
+      return
     }
+    const frame = requestAnimationFrame(() => scrollSmoothlyTo(0, true))
+    return () => cancelAnimationFrame(frame)
   }, [pathname, search, key])
   useEffect(() => {
     document.title = `${pathname === '/catalog' ? 'Koleksi' : pathname === '/cart' ? 'Your Bag' : 'Wear your own way.'} — L’MOR`
@@ -872,6 +868,7 @@ function NotFound() {
   )
 }
 export default function App() {
+  const { pathname } = useLocation()
   useSmoothScroll()
   return (
     <>
@@ -895,7 +892,7 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      <Footer />
+      {pathname !== '/' && <Footer />}
     </>
   )
 }

@@ -1,42 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useLocation } from 'react-router-dom'
-import { scrollSmoothlyTo } from './smoothScroll'
 
 export type HomeSection = 'intro' | 'studio' | 'about'
+let currentSection: HomeSection = 'intro'
+let navigateScene: ((section: HomeSection) => void) | undefined
+const subscribers = new Set<() => void>()
+const subscribe = (listener: () => void) => {
+  subscribers.add(listener)
+  return () => {
+    subscribers.delete(listener)
+  }
+}
+const snapshot = () => currentSection
 
-export function scrollToSection(id: HomeSection) {
-  const target = document.getElementById(id)
-  if (target) scrollSmoothlyTo(target)
+export function publishHomeSection(section: HomeSection) {
+  if (currentSection === section) return
+  currentSection = section
+  subscribers.forEach((listener) => listener())
 }
 
-// The visible section determines navigation state, even after manual scrolling.
+export function registerSceneNavigation(
+  navigate: (section: HomeSection) => void,
+  initial: HomeSection,
+) {
+  navigateScene = navigate
+  publishHomeSection(initial)
+  return () => {
+    if (navigateScene === navigate) navigateScene = undefined
+  }
+}
+
+// Existing links keep working; home navigation now swaps layers in one viewport.
+export function scrollToSection(section: HomeSection) {
+  navigateScene?.(section)
+}
+
 export function useHomeSection() {
   const { pathname } = useLocation()
-  const [section, setSection] = useState<HomeSection>('intro')
-  useEffect(() => {
-    if (pathname !== '/') return
-    let frame = 0
-    const update = () => {
-      frame = 0
-      const marker = innerHeight * 0.45
-      let current: HomeSection = 'intro'
-      for (const id of ['studio', 'about'] as const) {
-        const target = document.getElementById(id)
-        if (target && target.getBoundingClientRect().top <= marker) current = id
-      }
-      setSection(current)
-    }
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update)
-    }
-    schedule()
-    window.addEventListener('scroll', schedule, { passive: true })
-    window.addEventListener('resize', schedule)
-    return () => {
-      cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', schedule)
-      window.removeEventListener('resize', schedule)
-    }
-  }, [pathname])
+  const section = useSyncExternalStore(subscribe, snapshot, snapshot)
   return pathname === '/' ? section : null
 }

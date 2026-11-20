@@ -30,9 +30,9 @@ class AvatarBoundary extends Component<
 }
 export default function AvatarView(props: React.ComponentProps<typeof Avatar>) {
   const ref = useRef<HTMLDivElement>(null),
-    [visible, setVisible] = useState(!!props.hero)
+    [visible, setVisible] = useState(!!props.hero && props.active !== false)
   useEffect(() => {
-    if (visible || !ref.current) return
+    if (visible || !ref.current || props.active === false) return
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -44,7 +44,7 @@ export default function AvatarView(props: React.ComponentProps<typeof Avatar>) {
     )
     observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [visible])
+  }, [visible, props.active])
   return (
     <div ref={ref} className="avatar-view">
       <AvatarBoundary>

@@ -98,7 +98,11 @@ function Measurement({
     </div>
   )
 }
-export default function Studio() {
+export default function Studio({
+  active: sceneActive = true,
+}: {
+  active?: boolean
+}) {
   const {
       state,
       select,
@@ -139,10 +143,9 @@ export default function Studio() {
         </button>
       </div>
       <div className="section-heading">
-        <h2 id="studio-title">
+        <h2 id="studio-title" tabIndex={-1}>
           Your fit.
-          <br />
-          <span>Your rules.</span>
+          <br /> <span>Your rules.</span>
         </h2>
         <p>
           Jangan cuma dibayangin.
@@ -270,6 +273,7 @@ export default function Studio() {
               YOU.
             </div>
             <AvatarView
+              active={sceneActive}
               body={state.body}
               top={state.top}
               bottom={state.bottom}

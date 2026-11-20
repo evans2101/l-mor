@@ -4683,3 +4683,316 @@ input[type='range']::-moz-range-thumb {
     height: 100svh;
   }
 }
+
+/* Home is a single viewport; gestures exchange content layers in place. */
+html.experience-mode,
+body.experience-mode {
+  overflow: hidden;
+  height: 100dvh;
+  overscroll-behavior: none;
+}
+.experience-fixed {
+  position: relative;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #10181e;
+}
+.experience-fixed .experience-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: center;
+  pointer-events: none;
+}
+.experience-fixed .experience-scene[data-active='true'] {
+  pointer-events: auto;
+}
+.experience-fixed[data-transitioning='true'] .experience-scene {
+  pointer-events: none;
+}
+.experience-fixed .story-pin,
+.experience-fixed .closing-pin {
+  position: relative;
+  top: auto;
+  height: 100%;
+  min-height: 0;
+}
+.experience-fixed .chapter-dock {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+.experience-studio-scroll {
+  height: 100%;
+  padding: 112px 0 85px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #617583 transparent;
+  background: radial-gradient(ellipse at 80% 25%, #26343c, #10171d 65%);
+}
+.experience-studio-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.experience-studio-scroll::-webkit-scrollbar-thumb {
+  background: #617583;
+  border-radius: 8px;
+}
+.experience-fixed .studio-section {
+  padding-top: 0;
+  padding-bottom: 30px;
+}
+.experience-fixed .studio-foot {
+  margin-top: 18px;
+}
+.experience-fixed .story-bottom {
+  bottom: 32px;
+}
+.experience-fixed .logo-canvas {
+  pointer-events: none;
+}
+@media (min-width: 1000px) {
+  .experience-studio-scroll {
+    padding: 110px 5% 78px;
+    overflow: hidden;
+  }
+  .experience-fixed .studio-section {
+    height: 100%;
+    max-width: 1700px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .experience-fixed .section-heading {
+    margin: 14px 0 22px;
+    gap: 24px;
+  }
+  .experience-fixed .section-heading h2 {
+    font-size: clamp(38px, 4vw, 62px);
+    letter-spacing: -2.5px;
+  }
+  .experience-fixed .section-heading h2 > br {
+    display: none;
+  }
+  .experience-fixed .section-heading h2 > span:before {
+    content: ' ';
+  }
+  .experience-fixed .section-heading > p {
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .experience-fixed .studio-layout {
+    min-height: 0;
+    flex: 1;
+    align-items: stretch;
+    gap: 24px;
+  }
+  .experience-fixed .wardrobe {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 20px;
+  }
+  .experience-fixed .wardrobe-heading,
+  .experience-fixed .category-tabs,
+  .experience-fixed .wardrobe-status,
+  .experience-fixed .garment-controls {
+    flex-shrink: 0;
+  }
+  .experience-fixed .wardrobe-grid {
+    flex: 1;
+    min-height: 110px;
+    max-height: none;
+    align-items: start;
+    align-content: start;
+  }
+  .experience-fixed .wardrobe h3 {
+    font-size: 23px;
+  }
+  .experience-fixed .category-tabs {
+    margin-top: 12px;
+  }
+  .experience-fixed .wardrobe-status {
+    margin: 12px 0 17px;
+  }
+  .experience-fixed .fitting-panel {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #6b818e transparent;
+    padding: 0 22px 20px;
+  }
+  .experience-fixed .fitting-header {
+    height: 44px;
+  }
+  .experience-fixed .avatar-stage {
+    height: clamp(260px, 34dvh, 370px);
+  }
+  .experience-fixed .body-controls {
+    padding-top: 16px;
+  }
+  .experience-fixed .measurement-grid {
+    margin-top: 20px;
+  }
+  .experience-fixed .fit-note {
+    margin-top: 14px;
+  }
+  .experience-fixed .look-summary {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .experience-fixed .studio-actions {
+    margin-top: 18px;
+  }
+  .experience-fixed .studio-foot {
+    display: none;
+  }
+}
+@media (max-width: 999px) {
+  .experience-studio-scroll {
+    height: calc(100% - 80px);
+    padding-top: 106px;
+    padding-bottom: 24px;
+  }
+  .experience-fixed .story-bottom {
+    bottom: 100px;
+  }
+}
+@media (max-width: 600px) {
+  .experience-studio-scroll {
+    padding-top: 105px;
+    padding-bottom: 24px;
+  }
+  .experience-fixed .section-heading {
+    margin-bottom: 30px;
+  }
+  .experience-fixed .section-heading h2 {
+    font-size: 48px;
+  }
+}
+@media (max-height: 650px) {
+  .experience-fixed .story-heading {
+    top: 25%;
+    font-size: clamp(50px, 12dvh, 85px);
+  }
+  .experience-fixed .story-edition {
+    display: none;
+  }
+  .experience-fixed .story-opening-copy {
+    bottom: 16%;
+  }
+  .experience-fixed .story-opening-copy > p {
+    font-size: 12px;
+  }
+  .experience-fixed .story-actions {
+    margin-top: 14px;
+  }
+  .experience-fixed .story-bottom {
+    display: none;
+  }
+  .experience-fixed .closing-top,
+  .experience-fixed .closing-copy > p,
+  .experience-fixed .closing-bottom {
+    display: none;
+  }
+  .experience-fixed .closing-copy {
+    top: 20%;
+  }
+  .experience-fixed .closing-copy > h2 {
+    font-size: 23px;
+  }
+  .experience-fixed .closing-logo {
+    top: 33%;
+    height: 32%;
+  }
+  .experience-fixed .closing-actions {
+    flex-direction: row;
+    bottom: 18%;
+    white-space: nowrap;
+  }
+  .experience-fixed .closing-actions > .btn {
+    font-size: 11px;
+    padding-inline: 14px;
+    min-height: 38px;
+  }
+}
+@media (min-width: 1200px) {
+  .experience-fixed .fitting-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(245px, 0.86fr);
+    grid-template-rows: 44px minmax(0, 1fr) auto auto;
+    column-gap: 20px;
+    row-gap: 14px;
+    overflow: auto;
+  }
+  .experience-fixed .fitting-header {
+    grid-column: 1 / -1;
+  }
+  .experience-fixed .avatar-stage {
+    grid-column: 1;
+    grid-row: 2 / 5;
+    height: 100%;
+    min-height: 350px;
+  }
+  .experience-fixed .body-controls {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    padding: 0;
+    border: 0;
+  }
+  .experience-fixed .skin-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .experience-fixed .skin-row .field-label {
+    flex-direction: row;
+    gap: 7px;
+  }
+  .experience-fixed .measurement-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 23px;
+  }
+  .experience-fixed .measurement > div:first-child {
+    margin-bottom: 10px;
+  }
+  .experience-fixed .look-summary {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .experience-fixed .look-summary > strong {
+    font-size: 22px;
+  }
+  .experience-fixed .studio-actions {
+    grid-column: 2;
+    grid-row: 4;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0;
+  }
+  .experience-fixed .gender-toggle > button {
+    padding-inline: 12px;
+  }
+  .experience-fixed .camera-tools {
+    right: 0;
+  }
+  .experience-fixed .outfit-tag {
+    display: none;
+  }
+  .experience-fixed .stage-word {
+    top: 22%;
+    font-size: 100px;
+  }
+}
